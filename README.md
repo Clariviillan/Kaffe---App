@@ -11,3 +11,26 @@ To run this application:
 ```
 flask --debug run
 ```
+
+## Desplegar en Render
+
+1. Crea un repositorio en GitHub y publica esta rama:
+
+   ```bash
+   git add .
+   git commit -m "Preparar despliegue en Render"
+   git remote add origin https://github.com/TU_USUARIO/TU_REPOSITORIO.git
+   git push -u origin main
+   ```
+
+2. En Render, selecciona **New > Blueprint** y conecta el repositorio.
+3. Render detectara `render.yaml` y configurara el servicio `kaffe`.
+4. Como alternativa manual, usa:
+   - Runtime: Python
+   - Build Command: `pip install -r requirements.txt`
+   - Start Command: `gunicorn app:app`
+   - Health Check Path: `/estado`
+
+La base de datos SQLite incluida es temporal en Render: los datos se reinician al
+volver a desplegar o reiniciar el servicio. Para usuarios y pedidos persistentes,
+configura una base PostgreSQL administrada de Render.
