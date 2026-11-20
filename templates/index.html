@@ -1,19 +1,2903 @@
+<!DOCTYPE html>
+<html lang="es">
 <head>
-    <title>{{ title }}</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Kaffe • Café de Especialidad en Tijuana</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <!-- Leaflet CSS para Mapa Real Interactivo de Tijuana -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
     <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
-
+</head>
 <body>
-    <div class="App">
-        <header class="App-header">
-            <img src="{{ url_for('static', filename='Octocat.png') }}" class="App-logo" alt="logo" />
-            <p>
-                GitHub Codespaces <span class="heart">♥️</span> Flask
-            </p>
-            <p class="small">
-                Edit <code>templates/index.html</code> and refresh to see your changes!
-            </p>
-        </header>
+  <div class="app-shell">
+    <!-- Toast de Notificaciones -->
+    <div id="toast" class="toast">
+      <i class="fa-solid fa-mug-hot" style="color: var(--coffee-latte);"></i>
+      <span id="toast-msg"></span>
     </div>
-</body>
 
+    <!-- ========================================================================
+         PANTALLA 1: INICIO DE SESIÓN / REGISTRO (CLIENTE Y CAFETERÍA)
+         ======================================================================== -->
+    <section id="auth-view" class="auth-screen">
+      <div class="brand-hero">
+        <!-- Logotipo oficial Kaffe sobre aura blanca difuminada -->
+        <div class="brand-aura-wrap">
+          <svg width="235" height="74" viewBox="0 0 380 120" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Logotipo Kaffe">
+            <g transform="translate(8, 6)">
+              <path d="M54 4 C56.2 4 57.6 5.5 58.6 8.2 L68.8 34.8 C69.5 36.6 71.1 37.9 73 38.1 L101.2 40.5 C104.2 40.8 105.6 42.3 105.6 44.3 C105.6 45.8 104.6 47.2 102.6 48.8 L80.8 66.8 C79.3 68.1 78.6 70.1 79.1 72 L86.1 99.6 C86.8 102.4 85.9 104.2 84.1 105.2 C82.5 106.1 80.5 105.7 78.2 104.2 L54.4 88.8 C52.8 87.7 50.7 87.7 49.1 88.8 L25.3 104.2 C23 105.7 21 106.1 19.4 105.2 C17.6 104.2 16.7 102.4 17.4 99.6 L24.4 72 C24.9 70.1 24.2 68.1 22.7 66.8 L0.9 48.8 C-1.1 47.2 -2.1 45.8 -2.1 44.3 C-2.1 42.3 -0.7 40.8 2.3 40.5 L30.5 38.1 C32.4 37.9 34 36.6 34.7 34.8 L44.9 8.2 C45.9 5.5 47.3 4 49.5 4 Z" transform="translate(2, 0)" fill="#7B4B50"/>
+              <path d="M53.8 27.5 C54.9 27.5 55.7 28.3 56.3 29.8 L61.8 44.2 C62.2 45.2 63.1 45.9 64.1 46.1 L79.4 47.4 C81.1 47.5 81.9 48.4 81.9 49.5 C81.9 50.4 81.3 51.2 80.2 52.1 L68.3 61.9 C67.5 62.6 67.1 63.7 67.4 64.8 L71.2 79.8 C71.6 81.4 71.1 82.4 70.1 82.9 C69.2 83.4 68.1 83.2 66.8 82.3 L53.9 73.9 C53 73.3 51.9 73.3 51 73.9 L38.1 82.3 C36.8 83.2 35.7 83.4 34.8 82.9 C33.8 82.4 33.3 81.4 33.7 79.8 L37.5 64.8 C37.8 63.7 37.4 62.6 36.6 61.9 L24.7 52.1 C23.6 51.2 23 50.4 23 49.5 C23 48.4 23.8 47.5 25.5 47.4 L40.8 46.1 C41.8 45.9 42.7 45.2 43.1 44.2 L48.6 29.8 C49.2 28.3 50 27.5 51.1 27.5 Z" transform="translate(1.5, 0)" fill="#4D0C10"/>
+            </g>
+            <g fill="#7B4B50">
+              <path d="M134 39 H156 V43.2 C151.5 43.8 149.8 45.5 149.8 50.2 V67.5 L168.5 49.2 C171.4 46.3 171.8 44.1 167.2 43.2 V39 H186.5 V43.2 C181.8 43.9 179.2 45.8 174.6 50.3 L161.2 63.4 L179.5 88.2 C183.2 93.2 185.6 94.6 189.8 95.3 V99.5 H166.2 V95.3 C170.5 94.6 171.1 92.8 168.3 88.9 L154.2 69.6 L149.8 73.8 V89.2 C149.8 93.9 151.5 94.7 156 95.3 V99.5 H134 V95.3 C138.5 94.7 140.2 93.9 140.2 89.2 V50.2 C140.2 45.5 138.5 43.8 134 43.2 Z"/>
+              <path d="M210.5 56.2 C222.2 56.2 228.4 61.5 228.4 71.6 V89.5 C228.4 93.1 229.6 94.4 232.1 94.4 C233.4 94.4 234.6 93.9 235.6 93.1 L237.2 95.8 C234.5 98.6 230.8 100.3 226.8 100.3 C222.3 100.3 219.8 98.1 219.2 94.1 C214.8 98.1 209.6 100.4 203.8 100.4 C195.8 100.4 190.5 95.5 190.5 88.6 C190.5 80.5 197.8 76.2 211.6 74.4 L219.1 73.4 V69.8 C219.1 63.3 215.6 59.8 209.4 59.8 C205.2 59.8 202.3 61.5 201.6 64.2 C202.9 65.1 203.7 66.5 203.7 68.2 C203.7 71.1 201.4 73.2 198.4 73.2 C195.2 73.2 192.9 70.8 192.9 67.4 C192.9 60.9 200.4 56.2 210.5 56.2 Z M219.1 76.8 L212.8 77.7 C203.8 79 199.9 82.3 199.9 87.6 C199.9 92.1 203.1 95.1 207.9 95.1 C212.3 95.1 216.2 93.1 219.1 89.8 Z"/>
+              <path d="M266.8 26.5 C276.6 26.5 283.4 31.8 283.4 38.4 C283.4 42.3 280.6 45.1 276.9 45.1 C273.4 45.1 270.8 42.6 270.8 39.2 C270.8 37.3 271.7 35.6 273.2 34.6 C271.8 32.1 269.2 30.7 265.7 30.7 C258.9 30.7 255.2 36.2 255.2 46.8 V57.4 H267.8 V61.4 H255.2 V89.5 C255.2 94.1 256.8 94.8 261.8 95.3 V99.5 H239.8 V95.3 C244.2 94.8 245.8 94.1 245.8 89.5 V61.4 H238.5 V57.4 H245.8 V48.2 C245.8 34.4 254.2 26.5 266.8 26.5 Z"/>
+              <path d="M306.8 26.5 C316.6 26.5 323.4 31.8 323.4 38.4 C323.4 42.3 320.6 45.1 316.9 45.1 C313.4 45.1 310.8 42.6 310.8 39.2 C310.8 37.3 311.7 35.6 313.2 34.6 C311.8 32.1 309.2 30.7 305.7 30.7 C298.9 30.7 295.2 36.2 295.2 46.8 V57.4 H307.8 V61.4 H295.2 V89.5 C295.2 94.1 296.8 94.8 301.8 95.3 V99.5 H279.8 V95.3 C284.2 94.8 285.8 94.1 285.8 89.5 V61.4 H278.5 V57.4 H285.8 V48.2 C285.8 34.4 294.2 26.5 306.8 26.5 Z"/>
+              <path d="M342.4 56.2 C355.2 56.2 363.2 64.8 363.2 76.2 C363.2 77.2 363.1 78.2 362.9 79.1 H328.6 C329.3 89.2 335.4 95.1 344.6 95.1 C350.9 95.1 355.6 92.3 359.2 87.2 L362.5 89.5 C358.1 96.4 351.2 100.5 342.2 100.5 C328.4 100.5 318.8 90.8 318.8 78.4 C318.8 65.6 328.6 56.2 342.4 56.2 Z M328.7 75.2 H353.4 C353.1 65.6 348.7 60.1 341.8 60.1 C334.7 60.1 329.6 65.5 328.7 75.2 Z"/>
+            </g>
+          </svg>
+        </div>
+        <p class="brand-subtitle">Café de especialidad local en Tijuana • Ordena y recoge</p>
+      </div>
+
+      <div class="auth-card">
+        <!-- Selector de Perfil: Cliente o Cafetería -->
+        <div class="role-switcher">
+          <button type="button" class="role-btn active" id="role-client-btn" onclick="setAuthRole('client')">
+            <i class="fa-solid fa-mug-saucer"></i> Cliente
+          </button>
+          <button type="button" class="role-btn" id="role-cafe-btn" onclick="setAuthRole('cafe')">
+            <i class="fa-solid fa-store"></i> Cafetería
+          </button>
+        </div>
+
+        <div id="role-indicator-banner" class="role-indicator-banner">
+          <i class="fa-solid fa-mug-hot" style="color: var(--wine-800);"></i>
+          <span>Acceso para Cliente</span>
+        </div>
+
+        <!-- Tabs: Iniciar Sesión / Registrarse -->
+        <div class="auth-tabs">
+          <button type="button" class="auth-tab active" id="tab-login" onclick="setAuthMode('login')">Iniciar Sesión</button>
+          <button type="button" class="auth-tab" id="tab-register" onclick="setAuthMode('register')">Crear Cuenta</button>
+        </div>
+
+        <form id="auth-form" onsubmit="handleAuthSubmit(event)" novalidate>
+          <!-- Campos exclusivos de Registro -->
+          <div id="register-fields" class="hidden">
+            <div class="input-group">
+              <label id="name-label">Tu Nombre Completo</label>
+              <input type="text" id="auth-name" class="input-control" placeholder="Ej. Sofía Morales">
+            </div>
+
+            <!-- Campos extra de Registro: Cliente -->
+            <div id="client-reg-extra">
+              <div class="input-group">
+                <label>Usuario de Instagram</label>
+                <input type="text" id="auth-ig" class="input-control" placeholder="Ej. @sofia.tij">
+              </div>
+              <div class="input-group">
+                <label>Elige tu foto de perfil</label>
+                <div class="avatar-selector" id="avatar-selector">
+                  <div class="avatar-option selected" onclick="selectAvatar(this, '{{ url_for('static', filename='profile-coffee.svg') }}')">
+                    <img src="{{ url_for('static', filename='profile-coffee.svg') }}" alt="Taza de café sonriente">
+                  </div>
+                  <div class="avatar-option" onclick="selectAvatar(this, '{{ url_for('static', filename='profile-beans.svg') }}')">
+                    <img src="{{ url_for('static', filename='profile-beans.svg') }}" alt="Granos de café">
+                  </div>
+                  <div class="avatar-option" onclick="selectAvatar(this, '{{ url_for('static', filename='profile-latte.svg') }}')">
+                    <img src="{{ url_for('static', filename='profile-latte.svg') }}" alt="Taza de latte">
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Campos extra obligatorios de Registro: Cafetería (incluye RFC y Membresía $399 MXN/mes) -->
+            <div id="cafe-reg-extra" class="hidden">
+              <div class="input-group">
+                <label>RFC del Negocio en Tijuana (12 o 13 caracteres)</label>
+                <input type="text" id="auth-rfc" class="input-control" placeholder="Ej. DCO180412TJ8" maxlength="13" style="text-transform: uppercase;">
+              </div>
+              <div class="input-group">
+                <label>Dirección Exacta de la Barra en Tijuana</label>
+                <input type="text" id="auth-address" class="input-control" placeholder="Ej. Calle Brasilia 210, Col. Cacho, Tijuana">
+              </div>
+              <div class="input-group">
+                <label>Zona / Colonia de Tijuana</label>
+                <select id="auth-zone" class="input-control">
+                  <option value="Col. Cacho">Col. Cacho</option>
+                  <option value="Zona Río">Zona Río</option>
+                  <option value="Agua Caliente">Agua Caliente</option>
+                  <option value="Hipódromo">Col. Hipódromo</option>
+                  <option value="Centro">Zona Centro / Av. Revolución</option>
+                  <option value="Playas de Tijuana">Playas de Tijuana</option>
+                </select>
+              </div>
+              <div class="input-group">
+                <label>Teléfono de la Cafetería (Lada 664)</label>
+                <input type="tel" id="auth-phone" class="input-control" placeholder="Ej. 664 684 2190">
+              </div>
+
+              <!-- Suscripción Mensual Kaffe Partner $399 MXN/mes -->
+              <div class="membership-plan-box">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <span style="font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--coffee-latte); font-weight: 700;">
+                    <i class="fa-solid fa-crown"></i> Plan Kaffe Partner
+                  </span>
+                  <span class="badge badge-coffee">Facturación Mensual</span>
+                </div>
+                <div class="membership-price-tag">
+                  <strong class="font-serif" style="font-size: 1.45rem; color: var(--beige-50);">$399 MXN</strong>
+                  <span style="font-size: 0.76rem; color: var(--beige-200);">/ mes (IVA incluido)</span>
+                </div>
+                <ul class="membership-perks">
+                  <li><i class="fa-solid fa-check"></i> Pin de granito de café activo en mapa real de Tijuana</li>
+                  <li><i class="fa-solid fa-check"></i> Gestión de pedidos pick-up y catálogo ilimitado</li>
+                  <li><i class="fa-solid fa-check"></i> Participación en Top Semana Tijuana y Pasaporte</li>
+                </ul>
+
+                <div class="input-group" style="margin-bottom: 10px;">
+                  <label style="color: var(--beige-100);">Método de pago de suscripción ($399/mes)</label>
+                  <select id="reg-sub-method" class="input-control" onchange="toggleRegSubPaymentFields()">
+                    <option value="card">💳 Tarjeta de Crédito / Débito (Domiciliado)</option>
+                    <option value="spei">🏦 Transferencia SPEI / OXXO Pay ($399 MXN)</option>
+                  </select>
+                </div>
+
+                <div id="reg-sub-card-fields">
+                  <div class="input-group" style="margin-bottom: 8px;">
+                    <input type="text" id="reg-card-number" class="input-control" placeholder="Número de tarjeta (16 dígitos)" maxlength="19">
+                  </div>
+                  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                    <input type="text" id="reg-card-exp" class="input-control" placeholder="MM/AA" maxlength="5">
+                    <input type="password" id="reg-card-cvv" class="input-control" placeholder="CVV" maxlength="4">
+                  </div>
+                </div>
+
+                <div id="reg-sub-spei-info" class="hidden" style="background: rgba(250,246,240,0.12); padding: 10px; border-radius: 10px; font-size: 0.76rem; color: var(--beige-100);">
+                  <div><strong>CLABE SPEI Kaffe MX:</strong> 0120 2800 1948 3990 14</div>
+                  <div style="margin-top: 3px; color: var(--coffee-latte);">Referencia OXXO Pay: <strong>9300-3990-KAFFE</strong> • Activación inmediata</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label id="email-label">Correo Electrónico</label>
+            <input type="email" id="auth-email" class="input-control" placeholder="ejemplo@kaffe.mx">
+          </div>
+
+          <div class="input-group">
+            <label>Contraseña</label>
+            <input type="password" id="auth-pass" class="input-control" placeholder="••••••••">
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-block" id="auth-submit-btn">
+            Entrar como Cliente
+          </button>
+        </form>
+      </div>
+    </section>
+
+    <!-- ========================================================================
+         PANTALLA 2: APLICACIÓN PRINCIPAL (CLIENTE / CAFETERÍA)
+         ======================================================================== -->
+    <div id="main-app" class="hidden" style="display: flex; flex-direction: column; min-height: 100vh;">
+      <header class="top-header">
+        <button type="button" id="header-logout-btn" class="icon-btn" onclick="logout()" title="Cerrar sesión">
+          <i class="fa-solid fa-right-from-bracket"></i>
+        </button>
+        <div class="hidden">
+          <div class="hidden">
+            <svg width="86" height="27" viewBox="0 0 380 120" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Logotipo Kaffe">
+              <g transform="translate(8, 6)">
+                <path d="M54 4 C56.2 4 57.6 5.5 58.6 8.2 L68.8 34.8 C69.5 36.6 71.1 37.9 73 38.1 L101.2 40.5 C104.2 40.8 105.6 42.3 105.6 44.3 C105.6 45.8 104.6 47.2 102.6 48.8 L80.8 66.8 C79.3 68.1 78.6 70.1 79.1 72 L86.1 99.6 C86.8 102.4 85.9 104.2 84.1 105.2 C82.5 106.1 80.5 105.7 78.2 104.2 L54.4 88.8 C52.8 87.7 50.7 87.7 49.1 88.8 L25.3 104.2 C23 105.7 21 106.1 19.4 105.2 C17.6 104.2 16.7 102.4 17.4 99.6 L24.4 72 C24.9 70.1 24.2 68.1 22.7 66.8 L0.9 48.8 C-1.1 47.2 -2.1 45.8 -2.1 44.3 C-2.1 42.3 -0.7 40.8 2.3 40.5 L30.5 38.1 C32.4 37.9 34 36.6 34.7 34.8 L44.9 8.2 C45.9 5.5 47.3 4 49.5 4 Z" transform="translate(2, 0)" fill="#7B4B50"/>
+                <path d="M53.8 27.5 C54.9 27.5 55.7 28.3 56.3 29.8 L61.8 44.2 C62.2 45.2 63.1 45.9 64.1 46.1 L79.4 47.4 C81.1 47.5 81.9 48.4 81.9 49.5 C81.9 50.4 81.3 51.2 80.2 52.1 L68.3 61.9 C67.5 62.6 67.1 63.7 67.4 64.8 L71.2 79.8 C71.6 81.4 71.1 82.4 70.1 82.9 C69.2 83.4 68.1 83.2 66.8 82.3 L53.9 73.9 C53 73.3 51.9 73.3 51 73.9 L38.1 82.3 C36.8 83.2 35.7 83.4 34.8 82.9 C33.8 82.4 33.3 81.4 33.7 79.8 L37.5 64.8 C37.8 63.7 37.4 62.6 36.6 61.9 L24.7 52.1 C23.6 51.2 23 50.4 23 49.5 C23 48.4 23.8 47.5 25.5 47.4 L40.8 46.1 C41.8 45.9 42.7 45.2 43.1 44.2 L48.6 29.8 C49.2 28.3 50 27.5 51.1 27.5 Z" transform="translate(1.5, 0)" fill="#4D0C10"/>
+              </g>
+              <g fill="#7B4B50">
+                <path d="M134 39 H156 V43.2 C151.5 43.8 149.8 45.5 149.8 50.2 V67.5 L168.5 49.2 C171.4 46.3 171.8 44.1 167.2 43.2 V39 H186.5 V43.2 C181.8 43.9 179.2 45.8 174.6 50.3 L161.2 63.4 L179.5 88.2 C183.2 93.2 185.6 94.6 189.8 95.3 V99.5 H166.2 V95.3 C170.5 94.6 171.1 92.8 168.3 88.9 L154.2 69.6 L149.8 73.8 V89.2 C149.8 93.9 151.5 94.7 156 95.3 V99.5 H134 V95.3 C138.5 94.7 140.2 93.9 140.2 89.2 V50.2 C140.2 45.5 138.5 43.8 134 43.2 Z"/>
+                <path d="M210.5 56.2 C222.2 56.2 228.4 61.5 228.4 71.6 V89.5 C228.4 93.1 229.6 94.4 232.1 94.4 C233.4 94.4 234.6 93.9 235.6 93.1 L237.2 95.8 C234.5 98.6 230.8 100.3 226.8 100.3 C222.3 100.3 219.8 98.1 219.2 94.1 C214.8 98.1 209.6 100.4 203.8 100.4 C195.8 100.4 190.5 95.5 190.5 88.6 C190.5 80.5 197.8 76.2 211.6 74.4 L219.1 73.4 V69.8 C219.1 63.3 215.6 59.8 209.4 59.8 C205.2 59.8 202.3 61.5 201.6 64.2 C202.9 65.1 203.7 66.5 203.7 68.2 C203.7 71.1 201.4 73.2 198.4 73.2 C195.2 73.2 192.9 70.8 192.9 67.4 C192.9 60.9 200.4 56.2 210.5 56.2 Z M219.1 76.8 L212.8 77.7 C203.8 79 199.9 82.3 199.9 87.6 C199.9 92.1 203.1 95.1 207.9 95.1 C212.3 95.1 216.2 93.1 219.1 89.8 Z"/>
+                <path d="M266.8 26.5 C276.6 26.5 283.4 31.8 283.4 38.4 C283.4 42.3 280.6 45.1 276.9 45.1 C273.4 45.1 270.8 42.6 270.8 39.2 C270.8 37.3 271.7 35.6 273.2 34.6 C271.8 32.1 269.2 30.7 265.7 30.7 C258.9 30.7 255.2 36.2 255.2 46.8 V57.4 H267.8 V61.4 H255.2 V89.5 C255.2 94.1 256.8 94.8 261.8 95.3 V99.5 H239.8 V95.3 C244.2 94.8 245.8 94.1 245.8 89.5 V61.4 H238.5 V57.4 H245.8 V48.2 C245.8 34.4 254.2 26.5 266.8 26.5 Z"/>
+                <path d="M306.8 26.5 C316.6 26.5 323.4 31.8 323.4 38.4 C323.4 42.3 320.6 45.1 316.9 45.1 C313.4 45.1 310.8 42.6 310.8 39.2 C310.8 37.3 311.7 35.6 313.2 34.6 C311.8 32.1 309.2 30.7 305.7 30.7 C298.9 30.7 295.2 36.2 295.2 46.8 V57.4 H307.8 V61.4 H295.2 V89.5 C295.2 94.1 296.8 94.8 301.8 95.3 V99.5 H279.8 V95.3 C284.2 94.8 285.8 94.1 285.8 89.5 V61.4 H278.5 V57.4 H285.8 V48.2 C285.8 34.4 294.2 26.5 306.8 26.5 Z"/>
+                <path d="M342.4 56.2 C355.2 56.2 363.2 64.8 363.2 76.2 C363.2 77.2 363.1 78.2 362.9 79.1 H328.6 C329.3 89.2 335.4 95.1 344.6 95.1 C350.9 95.1 355.6 92.3 359.2 87.2 L362.5 89.5 C358.1 96.4 351.2 100.5 342.2 100.5 C328.4 100.5 318.8 90.8 318.8 78.4 C318.8 65.6 328.6 56.2 342.4 56.2 Z M328.7 75.2 H353.4 C353.1 65.6 348.7 60.1 341.8 60.1 C334.7 60.1 329.6 65.5 328.7 75.2 Z"/>
+              </g>
+            </svg>
+          </div>
+        </div>
+        <div class="header-actions">
+          <button type="button" id="header-cart-btn" class="icon-btn" onclick="openCartModal()" title="Tu bolsa pick-up">
+            <i class="fa-solid fa-bag-shopping"></i>
+            <span id="cart-count" class="cart-badge hidden">0</span>
+          </button>
+        </div>
+      </header>
+
+      <main id="app-content" class="main-content"></main>
+
+      <nav id="bottom-nav" class="bottom-nav"></nav>
+    </div>
+
+    <!-- ========================================================================
+         MODALES DE LA APLICACIÓN
+         ======================================================================== -->
+    <!-- Modal 1: Detalle de Cafetería, Menú del Día y Reseñas -->
+    <div id="cafe-modal" class="modal-overlay" onclick="closeModalOnBg(event, 'cafe-modal')">
+      <div class="bottom-sheet" id="cafe-modal-body"></div>
+    </div>
+
+    <!-- Modal 2: Carrito y Pago Pick-Up (100% o 50%/50%) -->
+    <div id="cart-modal" class="modal-overlay" onclick="closeModalOnBg(event, 'cart-modal')">
+      <div class="bottom-sheet" id="cart-modal-body"></div>
+    </div>
+
+    <!-- Modal 3: Calificar y Dejar Reseña (1 a 5 estrellas + foto) -->
+    <div id="review-modal" class="modal-overlay" onclick="closeModalOnBg(event, 'review-modal')">
+      <div class="bottom-sheet" id="review-modal-body"></div>
+    </div>
+
+    <!-- Modal 4: Editar Perfil del Cliente (Nombre, Instagram y Foto) -->
+    <div id="edit-profile-modal" class="modal-overlay" onclick="closeModalOnBg(event, 'edit-profile-modal')">
+      <div class="bottom-sheet" id="edit-profile-modal-body"></div>
+    </div>
+
+    <!-- Modal 5: Renovación / Pago Membresía Cafetería ($399 MXN / mes) -->
+    <div id="membership-modal" class="modal-overlay" onclick="closeModalOnBg(event, 'membership-modal')">
+      <div class="bottom-sheet" id="membership-modal-body"></div>
+    </div>
+  </div>
+
+  <!-- Leaflet JS para Mapa Real Interactivo de Tijuana -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+
+  <!-- ==========================================================================
+       LÓGICA DE LA APLICACIÓN KAFFE (TIJUANA, B.C.)
+       ========================================================================== -->
+  <script>
+    const DEFAULT_AVATAR = "{{ url_for('static', filename='profile-coffee.svg') }}";
+    const CURATED_AVATARS = [
+      DEFAULT_AVATAR,
+      "{{ url_for('static', filename='profile-beans.svg') }}",
+      "{{ url_for('static', filename='profile-latte.svg') }}"
+    ];
+    const DRINK_EXTRA_PRICE = 15;
+    const BUSINESS_DAYS = [
+      { key: 'monday', label: 'Lunes', short: 'Lun' },
+      { key: 'tuesday', label: 'Martes', short: 'Mar' },
+      { key: 'wednesday', label: 'Miércoles', short: 'Mié' },
+      { key: 'thursday', label: 'Jueves', short: 'Jue' },
+      { key: 'friday', label: 'Viernes', short: 'Vie' },
+      { key: 'saturday', label: 'Sábado', short: 'Sáb' },
+      { key: 'sunday', label: 'Domingo', short: 'Dom' }
+    ];
+    const CAFE_CUSTOMIZATION_CATALOG = {
+      milkTypes: ['Entera', 'Deslactosada', 'Avena', 'Almendra', 'Soya', 'Coco'],
+      sweeteners: ['Azúcar', 'Stevia', 'Miel', 'Agave', 'Monk fruit'],
+      syrups: ['Vainilla', 'Caramelo', 'Avellana', 'Canela', 'Lavanda'],
+      foams: ['Espuma de leche', 'Cold foam', 'Crema batida', 'Foam de vainilla']
+    };
+
+    let tijuanaMap = null;
+    let tijuanaLayerGroup = null;
+    let cafePickerMap = null;
+    let cafePickerMarker = null;
+
+    const state = {
+      authRole: 'client', // 'client' | 'cafe'
+      authMode: 'login',  // 'login' | 'register'
+      selectedAvatar: CURATED_AVATARS[0],
+      editingAvatarPreview: '',
+      currentUser: null,
+      activeTab: 'explorar',
+      searchQuery: '',
+      drinkFilter: 'Todos',
+      zoneFilter: 'Todas',
+      priceFilter: 'Todos',
+      sortFilter: 'top',
+      selectedCafeForRoute: 'cafe-das-cortez',
+      userCoords: { lat: 32.5216, lng: -117.0185, label: 'Tú (Zona Río / Cacho)' },
+      usingRealGps: false,
+      cart: [],
+      reviewRating: 5,
+
+      // Cafeterías reales de especialidad en Tijuana, B.C.
+      cafes: [
+        {
+          id: 'cafe-das-cortez',
+          name: 'Das Cortez',
+          rfc: 'DCO180412TJ8',
+          zone: 'Col. Cacho',
+          address: 'Calle Brasilia 210, Col. Cacho, Tijuana',
+          phone: '664 684 2190',
+          cover: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR7OOatyAvhK79HzJPewZjl1H3qQgBuY2t3MbnZiC773O2dVeqWkKCA4-Ju&s=10',
+          latLng: [32.5178, -117.0226],
+          bio: 'Referente del café de especialidad en Tijuana desde la Col. Cacho. Tostado propio de micro-lotes mexicanos, extracciones precisas y barra acogedora.',
+          membership: {
+            plan: 'Kaffe Partner Mensual',
+            amount: 399,
+            status: 'active',
+            paymentMethod: 'Tarjeta Visa •••• 4821',
+            lastPaidDate: '01 Nov 2026',
+            nextBillingDate: '01 Dic 2026',
+            receipts: [
+              { id: 'FAC-9041', date: '01 Nov 2026', amount: 399, method: 'Tarjeta •••• 4821', status: 'Pagado' },
+              { id: 'FAC-8812', date: '01 Oct 2026', amount: 399, method: 'Tarjeta •••• 4821', status: 'Pagado' }
+            ]
+          },
+          menu: [
+            { id: 'm1', name: 'Flat White Das Cortez', category: 'Espresso', price: 68, availableToday: true, img: 'https://images.unsplash.com/photo-1577968897966-3d4325b36b61?w=400&q=80' },
+            { id: 'm2', name: 'V60 Chiapas Honey', category: 'Filtrados/V60', price: 88, availableToday: true, img: 'https://images.unsplash.com/photo-1544787219-7f47ccb76574?w=400&q=80' },
+            { id: 'm3', name: 'Cold Brew Tonic Cacho', category: 'Cold Brew', price: 78, availableToday: true, img: 'https://images.unsplash.com/photo-1517701550927-30cf4ba1dba5?w=400&q=80' },
+            { id: 'm3b', name: 'Rol de Cardamomo Artesanal', category: 'Panadería', price: 62, availableToday: true, img: 'https://images.unsplash.com/photo-1509365465985-25d11c17e812?w=400&q=80' }
+          ],
+          reviews: [
+            { id: 'r1', userName: 'Sofía Morales', userAvatar: CURATED_AVATARS[0], rating: 5, comment: 'El V60 en Das Cortez nunca falla. Aroma increíble y atención impecable en la Cacho.', photo: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=500&q=80', date: 'Hace 2 días' },
+            { id: 'r2', userName: 'Diego Luna', userAvatar: DEFAULT_AVATAR, rating: 5, comment: 'Pido para recoger antes de ir a Zona Río y siempre está listo puntual.', photo: '', date: 'Hace 4 días' }
+          ]
+        },
+        {
+          id: 'cafe-baristi',
+          name: 'Baristi Roasters',
+          rfc: 'BAR140922TJ1',
+          zone: 'Zona Río',
+          address: 'Paseo de los Héroes 9550, Zona Río, Tijuana',
+          phone: '664 634 8810',
+          cover: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSxac_HvnPfUhzw97dQqcRzzIqj8ODFKcNn1LR9gzpo_w&s=10',
+          latLng: [32.5255, -117.0158],
+          bio: 'Pioneros del tostado de especialidad en Baja California. Granos seleccionados de altura, espresso balanceado y métodos artesanales en Zona Río.',
+          membership: {
+            plan: 'Kaffe Partner Mensual',
+            amount: 399,
+            status: 'active',
+            paymentMethod: 'Tarjeta •••• 9910',
+            lastPaidDate: '05 Nov 2026',
+            nextBillingDate: '05 Dic 2026',
+            receipts: [{ id: 'FAC-9110', date: '05 Nov 2026', amount: 399, method: 'Tarjeta •••• 9910', status: 'Pagado' }]
+          },
+          menu: [
+            { id: 'm4', name: 'Cortado Baja Roast', category: 'Espresso', price: 64, availableToday: true, img: 'https://images.unsplash.com/photo-1534778101976-62847782c213?w=400&q=80' },
+            { id: 'm5', name: 'Matcha Latte Ceremonial', category: 'Matcha/Té', price: 86, availableToday: true, img: 'https://images.unsplash.com/photo-1515823064-d6e0c04616a7?w=400&q=80' },
+            { id: 'm6', name: 'Chemex Origen Oaxaca', category: 'Filtrados/V60', price: 118, availableToday: true, img: 'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=400&q=80' }
+          ],
+          reviews: [
+            { id: 'r3', userName: 'Valeria Cruz', userAvatar: DEFAULT_AVATAR, rating: 5, comment: 'Clásico de Tijuana. Su cortado tiene el cuerpo perfecto.', photo: 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=500&q=80', date: 'Ayer' },
+            { id: 'r4', userName: 'Mateo Silva', userAvatar: DEFAULT_AVATAR, rating: 4, comment: 'Gran calidad de grano en Zona Río, ideal para pasar por un pick-up.', photo: '', date: 'Hace 5 días' }
+          ]
+        },
+        {
+          id: 'cafe-sospeso',
+          name: 'Sospeso Coffee Roasters',
+          rfc: 'SOS190715TJ5',
+          zone: 'Hipódromo',
+          address: 'Blvd. Agua Caliente 10611, Col. Hipódromo, Tijuana',
+          phone: '664 701 3340',
+          cover: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRFyDi2Ocwim25stl_ikuGaEvLXhpOwfrXxoSfz8Ass5w&s=10',
+          latLng: [32.5112, -116.9968],
+          bio: 'Tostaduría independiente sobre Blvd. Agua Caliente. Experimentación en fermentaciones, cold brew de 18 horas y hospitalidad tijuanense.',
+          membership: {
+            plan: 'Kaffe Partner Mensual',
+            amount: 399,
+            status: 'active',
+            paymentMethod: 'SPEI Kaffe MX',
+            lastPaidDate: '10 Nov 2026',
+            nextBillingDate: '10 Dic 2026',
+            receipts: [{ id: 'FAC-9204', date: '10 Nov 2026', amount: 399, method: 'SPEI Kaffe MX', status: 'Pagado' }]
+          },
+          menu: [
+            { id: 'm7', name: 'Nitro Cold Brew Sospeso', category: 'Cold Brew', price: 76, availableToday: true, img: 'https://images.unsplash.com/photo-1461023058943-07fcbe16d735?w=400&q=80' },
+            { id: 'm8', name: 'Espresso Tonic Naranja', category: 'Espresso', price: 74, availableToday: true, img: 'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=400&q=80' },
+            { id: 'm8b', name: 'Croissant de Almendras', category: 'Panadería', price: 68, availableToday: true, img: 'https://images.unsplash.com/photo-1555507036-ab1f4038808a?w=400&q=80' }
+          ],
+          reviews: [
+            { id: 'r5', userName: 'Carlos Nava', userAvatar: DEFAULT_AVATAR, rating: 5, comment: 'El Nitro Cold Brew de Sospeso es obligatorio si pasas por Agua Caliente.', photo: '', date: 'Hace 3 días' }
+          ]
+        },
+        {
+          id: 'cafe-electric',
+          name: 'Electric Coffee Roasters',
+          rfc: 'ECR171108TJ3',
+          zone: 'Centro',
+          address: 'Av. Revolución 1120, Zona Centro, Tijuana',
+          phone: '664 685 9012',
+          cover: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSDFuGdg5oy5H0gjfHlBcqdi1amZEV6r3Brz5nnXMgg0g&s=10',
+          latLng: [32.5326, -117.0372],
+          bio: 'Vibra urbana y tostado fresco en el corazón de la Revu. Bebidas de autor y métodos filtrados para explorar nuevos perfiles.',
+          membership: {
+            plan: 'Kaffe Partner Mensual',
+            amount: 399,
+            status: 'active',
+            paymentMethod: 'Tarjeta •••• 3104',
+            lastPaidDate: '12 Nov 2026',
+            nextBillingDate: '12 Dic 2026',
+            receipts: [{ id: 'FAC-9240', date: '12 Nov 2026', amount: 399, method: 'Tarjeta •••• 3104', status: 'Pagado' }]
+          },
+          menu: [
+            { id: 'm9', name: 'Latte Vainilla Tostada', category: 'Espresso', price: 70, availableToday: true, img: 'https://images.unsplash.com/photo-1577968897966-3d4325b36b61?w=400&q=80' },
+            { id: 'm10', name: 'Aeropress del Día', category: 'Filtrados/V60', price: 82, availableToday: true, img: 'https://images.unsplash.com/photo-1544787219-7f47ccb76574?w=400&q=80' },
+            { id: 'm10b', name: 'Chai Especiado de la Casa', category: 'Matcha/Té', price: 72, availableToday: true, img: 'https://images.unsplash.com/photo-1576092768241-dec231879fc3?w=400&q=80' }
+          ],
+          reviews: [
+            { id: 'r6', userName: 'Andrea Solís', userAvatar: CURATED_AVATARS[0], rating: 4, comment: 'Excelente parada en Av. Revolución, muy buen espresso.', photo: '', date: 'Hace 6 días' }
+          ]
+        },
+        {
+          id: 'cafe-sur-norte',
+          name: 'Sur A Norte Coffee',
+          rfc: 'SAN200319TJ9',
+          zone: 'Playas de Tijuana',
+          address: 'Paseo Ensenada 1420, Playas de Tijuana',
+          phone: '664 609 4418',
+          cover: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRsPbwXZT-pvj7cX4Q7iPL-bkJHnV_WjMjcMv_JZPaJ5g&s=10',
+          latLng: [32.5238, -117.1195],
+          bio: 'Café de especialidad frente a la brisa del Pacífico en Playas de Tijuana. Granos del sur de México tostados en el norte.',
+          membership: {
+            plan: 'Kaffe Partner Mensual',
+            amount: 399,
+            status: 'active',
+            paymentMethod: 'Tarjeta •••• 7742',
+            lastPaidDate: '15 Nov 2026',
+            nextBillingDate: '15 Dic 2026',
+            receipts: [{ id: 'FAC-9288', date: '15 Nov 2026', amount: 399, method: 'Tarjeta •••• 7742', status: 'Pagado' }]
+          },
+          menu: [
+            { id: 'm11', name: 'Cold Brew Horchata', category: 'Cold Brew', price: 82, availableToday: true, img: 'https://images.unsplash.com/photo-1517701550927-30cf4ba1dba5?w=400&q=80' },
+            { id: 'm12', name: 'Cappuccino Tradicional', category: 'Espresso', price: 65, availableToday: true, img: 'https://images.unsplash.com/photo-1534778101976-62847782c213?w=400&q=80' }
+          ],
+          reviews: [
+            { id: 'r7', userName: 'Luis Mendoza', userAvatar: DEFAULT_AVATAR, rating: 5, comment: 'El Cold Brew Horchata en Playas es una joya total.', photo: '', date: 'Hace 1 día' }
+          ]
+        },
+        {
+          id: 'cafe-te-quiero-matcha',
+          name: 'Te Quiero Matcha',
+          rfc: 'TQM240101TJ1',
+          zone: 'Col. Cacho',
+          address: 'Col. Cacho, Tijuana',
+          phone: '664 000 0001',
+          cover: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT2g73oKRRR6hmYjNUlqXszqleufFPCAGUBMLeWP3DZ1w&s=10',
+          latLng: [32.5169, -117.0208],
+          bio: 'Barra de matcha ceremonial con bebidas preparadas al momento, opciones frías y leche vegetal.',
+          membership: {
+            plan: 'Kaffe Partner Mensual',
+            amount: 399,
+            status: 'active',
+            paymentMethod: 'Cuenta de demostración',
+            lastPaidDate: '01 Nov 2026',
+            nextBillingDate: '01 Dic 2026',
+            receipts: []
+          },
+          menu: [
+            { id: 'tqm1', name: 'Matcha Latte Ceremonial', category: 'Matcha/Té', price: 85, availableToday: true, img: 'https://images.unsplash.com/photo-1515823064-d6e0c04616a7?w=400&q=80' },
+            { id: 'tqm2', name: 'Iced Strawberry Matcha', category: 'Matcha/Té', price: 95, availableToday: true, img: 'https://images.unsplash.com/photo-1515823064-d6e0c04616a7?w=400&q=80' },
+            { id: 'tqm3', name: 'Matcha Coco', category: 'Matcha/Té', price: 92, availableToday: true, img: 'https://images.unsplash.com/photo-1515823064-d6e0c04616a7?w=400&q=80' }
+          ],
+          reviews: []
+        },
+        {
+          id: 'cafe-unnies-matcha',
+          name: 'Unnies Matcha',
+          rfc: 'UMM240101TJ1',
+          zone: 'Zona Río',
+          address: 'Zona Río, Tijuana',
+          phone: '664 000 0002',
+          cover: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT_MB_DcP_apbwl-mK2aIBzi0VBHg3Z5dzAJITuGfyAiw&s=10',
+          latLng: [32.5261, -117.0168],
+          bio: 'Barra de matcha y bebidas suaves, con sabores frutales y alternativas de leche vegetal.',
+          membership: {
+            plan: 'Kaffe Partner Mensual',
+            amount: 399,
+            status: 'active',
+            paymentMethod: 'Cuenta de demostración',
+            lastPaidDate: '01 Nov 2026',
+            nextBillingDate: '01 Dic 2026',
+            receipts: []
+          },
+          menu: [
+            { id: 'mmb1', name: 'Matcha Vainilla', category: 'Matcha/Té', price: 88, availableToday: true, img: 'https://images.unsplash.com/photo-1515823064-d6e0c04616a7?w=400&q=80' },
+            { id: 'mmb2', name: 'Matcha Fresa', category: 'Matcha/Té', price: 96, availableToday: true, img: 'https://images.unsplash.com/photo-1515823064-d6e0c04616a7?w=400&q=80' },
+            { id: 'mmb3', name: 'Cold Matcha Limón', category: 'Matcha/Té', price: 90, availableToday: true, img: 'https://images.unsplash.com/photo-1515823064-d6e0c04616a7?w=400&q=80' }
+          ],
+          reviews: []
+        },
+        {
+          id: 'cafe-luckycha-matcha',
+          name: 'Luckycha Matcha',
+          rfc: 'LKM240101TJ1',
+          zone: 'Centro',
+          address: 'Zona Centro, Tijuana',
+          phone: '664 000 0003',
+          cover: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQms0u6expGfb7ktmtgozlAef4oqFlW2xA-nVk-FuuHEw&s=10',
+          latLng: [32.5311, -117.0358],
+          bio: 'Matcha de origen japonés en una barra enfocada en preparaciones clásicas, frías y de temporada.',
+          membership: {
+            plan: 'Kaffe Partner Mensual',
+            amount: 399,
+            status: 'active',
+            paymentMethod: 'Cuenta de demostración',
+            lastPaidDate: '01 Nov 2026',
+            nextBillingDate: '01 Dic 2026',
+            receipts: []
+          },
+          menu: [
+            { id: 'vrm1', name: 'Usucha Tradicional', category: 'Matcha/Té', price: 78, availableToday: true, img: 'https://images.unsplash.com/photo-1515823064-d6e0c04616a7?w=400&q=80' },
+            { id: 'vrm2', name: 'Matcha Latte de Avena', category: 'Matcha/Té', price: 92, availableToday: true, img: 'https://images.unsplash.com/photo-1515823064-d6e0c04616a7?w=400&q=80' },
+            { id: 'vrm3', name: 'Matcha Cold Foam', category: 'Matcha/Té', price: 98, availableToday: true, img: 'https://images.unsplash.com/photo-1515823064-d6e0c04616a7?w=400&q=80' }
+          ],
+          reviews: []
+        },
+        {
+          id: 'cafe-mmmatcha-delivery',
+          name: 'Mmmatcha Delivery',
+          rfc: 'Pendiente',
+          zone: 'Agua Caliente',
+          specialty: 'Matcha/Té',
+          address: 'Agua Caliente, Tijuana',
+          phone: '',
+          cover: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSW0cIZt1eCdRIj8xCszKcfB6jElh5H9jUNjjjBGSdc4g&s=10',
+          latLng: [32.5025, -116.991],
+          bio: 'Barra de matcha en Agua Caliente. Menú y horario por confirmar.',
+          membership: {
+            plan: 'Kaffe Partner Mensual',
+            amount: 399,
+            status: 'active',
+            paymentMethod: 'Cuenta de demostración',
+            lastPaidDate: '20 Nov 2026',
+            nextBillingDate: '20 Dic 2026',
+            receipts: []
+          },
+          menu: [],
+          reviews: []
+        },
+        {
+          id: 'cafe-antidoto-matcha-lab',
+          name: 'Antidoto Matcha Lab',
+          rfc: 'Pendiente',
+          zone: 'Col. Cacho',
+          specialty: 'Matcha/Té',
+          address: 'Col. Cacho, Tijuana',
+          phone: '',
+          cover: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTKUm570TEPdLSbpNfRsK20HrllCU44Ppy2nTQsks0GMA&s=10',
+          latLng: [32.5169, -117.0208],
+          bio: 'Barra de matcha en la Col. Cacho. Menú y horario por confirmar.',
+          membership: {
+            plan: 'Kaffe Partner Mensual',
+            amount: 399,
+            status: 'active',
+            paymentMethod: 'Cuenta de demostración',
+            lastPaidDate: '20 Nov 2026',
+            nextBillingDate: '20 Dic 2026',
+            receipts: []
+          },
+          menu: [],
+          reviews: []
+        }
+      ],
+
+      orders: [
+        {
+          id: 'ORD-842',
+          cafeId: 'cafe-das-cortez',
+          cafeName: 'Das Cortez',
+          clientName: 'Sofía Morales',
+          items: [{ name: 'Flat White Das Cortez', qty: 1, price: 68 }],
+          total: 68,
+          pickupTime: '10:30 AM',
+          paymentScheme: '50% Anticipo / 50% al Recoger',
+          paidAmount: 34,
+          pendingAmount: 34,
+          paymentMethod: 'Tarjeta en línea + Efectivo al recoger',
+          status: 'Listo para recoger',
+          time: 'Hoy, 10:15 AM'
+        },
+        {
+          id: 'ORD-791',
+          cafeId: 'cafe-baristi',
+          cafeName: 'Baristi Roasters',
+          clientName: 'Sofía Morales',
+          items: [{ name: 'Cortado Baja Roast', qty: 1, price: 64 }],
+          total: 64,
+          pickupTime: '4:45 PM',
+          paymentScheme: '100% Pagado en Línea',
+          paidAmount: 64,
+          pendingAmount: 0,
+          paymentMethod: 'Tarjeta',
+          status: 'Entregado',
+          time: 'Ayer, 4:30 PM'
+        }
+      ]
+    };
+
+    /* ------------------------------------------------------------------------
+       UTILIDADES GENERALES Y LOGOTIPO REUTILIZABLE
+       ------------------------------------------------------------------------ */
+    function getOfficialKaffeLogoSVG(width = 120, height = 38) {
+      return `
+        <svg width="${width}" height="${height}" viewBox="0 0 380 120" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Logotipo Kaffe">
+          <g transform="translate(8, 6)">
+            <path d="M54 4 C56.2 4 57.6 5.5 58.6 8.2 L68.8 34.8 C69.5 36.6 71.1 37.9 73 38.1 L101.2 40.5 C104.2 40.8 105.6 42.3 105.6 44.3 C105.6 45.8 104.6 47.2 102.6 48.8 L80.8 66.8 C79.3 68.1 78.6 70.1 79.1 72 L86.1 99.6 C86.8 102.4 85.9 104.2 84.1 105.2 C82.5 106.1 80.5 105.7 78.2 104.2 L54.4 88.8 C52.8 87.7 50.7 87.7 49.1 88.8 L25.3 104.2 C23 105.7 21 106.1 19.4 105.2 C17.6 104.2 16.7 102.4 17.4 99.6 L24.4 72 C24.9 70.1 24.2 68.1 22.7 66.8 L0.9 48.8 C-1.1 47.2 -2.1 45.8 -2.1 44.3 C-2.1 42.3 -0.7 40.8 2.3 40.5 L30.5 38.1 C32.4 37.9 34 36.6 34.7 34.8 L44.9 8.2 C45.9 5.5 47.3 4 49.5 4 Z" transform="translate(2, 0)" fill="#7B4B50"/>
+            <path d="M53.8 27.5 C54.9 27.5 55.7 28.3 56.3 29.8 L61.8 44.2 C62.2 45.2 63.1 45.9 64.1 46.1 L79.4 47.4 C81.1 47.5 81.9 48.4 81.9 49.5 C81.9 50.4 81.3 51.2 80.2 52.1 L68.3 61.9 C67.5 62.6 67.1 63.7 67.4 64.8 L71.2 79.8 C71.6 81.4 71.1 82.4 70.1 82.9 C69.2 83.4 68.1 83.2 66.8 82.3 L53.9 73.9 C53 73.3 51.9 73.3 51 73.9 L38.1 82.3 C36.8 83.2 35.7 83.4 34.8 82.9 C33.8 82.4 33.3 81.4 33.7 79.8 L37.5 64.8 C37.8 63.7 37.4 62.6 36.6 61.9 L24.7 52.1 C23.6 51.2 23 50.4 23 49.5 C23 48.4 23.8 47.5 25.5 47.4 L40.8 46.1 C41.8 45.9 42.7 45.2 43.1 44.2 L48.6 29.8 C49.2 28.3 50 27.5 51.1 27.5 Z" transform="translate(1.5, 0)" fill="#4D0C10"/>
+          </g>
+          <g fill="#7B4B50">
+            <path d="M134 39 H156 V43.2 C151.5 43.8 149.8 45.5 149.8 50.2 V67.5 L168.5 49.2 C171.4 46.3 171.8 44.1 167.2 43.2 V39 H186.5 V43.2 C181.8 43.9 179.2 45.8 174.6 50.3 L161.2 63.4 L179.5 88.2 C183.2 93.2 185.6 94.6 189.8 95.3 V99.5 H166.2 V95.3 C170.5 94.6 171.1 92.8 168.3 88.9 L154.2 69.6 L149.8 73.8 V89.2 C149.8 93.9 151.5 94.7 156 95.3 V99.5 H134 V95.3 C138.5 94.7 140.2 93.9 140.2 89.2 V50.2 C140.2 45.5 138.5 43.8 134 43.2 Z"/>
+            <path d="M210.5 56.2 C222.2 56.2 228.4 61.5 228.4 71.6 V89.5 C228.4 93.1 229.6 94.4 232.1 94.4 C233.4 94.4 234.6 93.9 235.6 93.1 L237.2 95.8 C234.5 98.6 230.8 100.3 226.8 100.3 C222.3 100.3 219.8 98.1 219.2 94.1 C214.8 98.1 209.6 100.4 203.8 100.4 C195.8 100.4 190.5 95.5 190.5 88.6 C190.5 80.5 197.8 76.2 211.6 74.4 L219.1 73.4 V69.8 C219.1 63.3 215.6 59.8 209.4 59.8 C205.2 59.8 202.3 61.5 201.6 64.2 C202.9 65.1 203.7 66.5 203.7 68.2 C203.7 71.1 201.4 73.2 198.4 73.2 C195.2 73.2 192.9 70.8 192.9 67.4 C192.9 60.9 200.4 56.2 210.5 56.2 Z M219.1 76.8 L212.8 77.7 C203.8 79 199.9 82.3 199.9 87.6 C199.9 92.1 203.1 95.1 207.9 95.1 C212.3 95.1 216.2 93.1 219.1 89.8 Z"/>
+            <path d="M266.8 26.5 C276.6 26.5 283.4 31.8 283.4 38.4 C283.4 42.3 280.6 45.1 276.9 45.1 C273.4 45.1 270.8 42.6 270.8 39.2 C270.8 37.3 271.7 35.6 273.2 34.6 C271.8 32.1 269.2 30.7 265.7 30.7 C258.9 30.7 255.2 36.2 255.2 46.8 V57.4 H267.8 V61.4 H255.2 V89.5 C255.2 94.1 256.8 94.8 261.8 95.3 V99.5 H239.8 V95.3 C244.2 94.8 245.8 94.1 245.8 89.5 V61.4 H238.5 V57.4 H245.8 V48.2 C245.8 34.4 254.2 26.5 266.8 26.5 Z"/>
+            <path d="M306.8 26.5 C316.6 26.5 323.4 31.8 323.4 38.4 C323.4 42.3 320.6 45.1 316.9 45.1 C313.4 45.1 310.8 42.6 310.8 39.2 C310.8 37.3 311.7 35.6 313.2 34.6 C311.8 32.1 309.2 30.7 305.7 30.7 C298.9 30.7 295.2 36.2 295.2 46.8 V57.4 H307.8 V61.4 H295.2 V89.5 C295.2 94.1 296.8 94.8 301.8 95.3 V99.5 H279.8 V95.3 C284.2 94.8 285.8 94.1 285.8 89.5 V61.4 H278.5 V57.4 H285.8 V48.2 C285.8 34.4 294.2 26.5 306.8 26.5 Z"/>
+            <path d="M342.4 56.2 C355.2 56.2 363.2 64.8 363.2 76.2 C363.2 77.2 363.1 78.2 362.9 79.1 H328.6 C329.3 89.2 335.4 95.1 344.6 95.1 C350.9 95.1 355.6 92.3 359.2 87.2 L362.5 89.5 C358.1 96.4 351.2 100.5 342.2 100.5 C328.4 100.5 318.8 90.8 318.8 78.4 C318.8 65.6 328.6 56.2 342.4 56.2 Z M328.7 75.2 H353.4 C353.1 65.6 348.7 60.1 341.8 60.1 C334.7 60.1 329.6 65.5 328.7 75.2 Z"/>
+          </g>
+        </svg>
+      `;
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      if (!toast) return;
+      document.getElementById('toast-msg').textContent = message;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 3000);
+    }
+
+    function getCafeRating(cafe) {
+      if (!cafe.reviews || cafe.reviews.length === 0) return 0;
+      const sum = cafe.reviews.reduce((acc, r) => acc + r.rating, 0);
+      return Number((sum / cafe.reviews.length).toFixed(1));
+    }
+
+    function getWeeklyTopCafes() {
+      return [...state.cafes].sort((a, b) => {
+        const diff = getCafeRating(b) - getCafeRating(a);
+        return diff !== 0 ? diff : b.reviews.length - a.reviews.length;
+      });
+    }
+
+    function getDistanceKm(lat1, lon1, lat2, lon2) {
+      const R = 6371;
+      const dLat = (lat2 - lat1) * Math.PI / 180;
+      const dLon = (lon2 - lon1) * Math.PI / 180;
+      const a =
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+        Math.sin(dLon / 2) * Math.sin(dLon / 2);
+      return Number((R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))).toFixed(1));
+    }
+
+    function closeModal(modalId) {
+      const el = document.getElementById(modalId);
+      if (el) el.classList.remove('open');
+    }
+
+    function closeModalOnBg(e, modalId) {
+      if (e.target.id === modalId) closeModal(modalId);
+    }
+
+    /* ------------------------------------------------------------------------
+       PERSISTENCIA Y COHERENCIA DE PERFIL POR CORREO ELECTRÓNICO
+       ------------------------------------------------------------------------ */
+    function getSavedClientProfiles() {
+      try {
+        return JSON.parse(localStorage.getItem('kaffe_tij_profiles_v2') || '{}');
+      } catch (e) {
+        return {};
+      }
+    }
+
+    function saveClientProfileToStorage(user) {
+      if (!user || user.role !== 'client' || !user.email) return;
+      try {
+        const profiles = getSavedClientProfiles();
+        profiles[user.email.toLowerCase()] = {
+          name: user.name,
+          instagram: user.instagram,
+          facebook: user.facebook || '',
+          avatar: user.avatar,
+          memberSince: user.memberSince,
+          level: user.level,
+          stamps: user.stamps,
+          purchasedDrinks: user.purchasedDrinks
+        };
+        localStorage.setItem('kaffe_tij_profiles_v2', JSON.stringify(profiles));
+      } catch (e) {}
+    }
+
+    function formatInstagramHandle(rawValue, fallbackEmail) {
+      let clean = (rawValue || '').trim().replace(/\s+/g, '');
+      if (!clean) {
+        const prefix = (fallbackEmail || 'kaffe.tij').split('@')[0].replace(/[^a-zA-Z0-9._]/g, '');
+        return '@' + (prefix || 'kaffe.tij');
+      }
+      if (!clean.startsWith('@')) clean = '@' + clean;
+      return clean;
+    }
+
+    function getInstagramProfileUrl(value) {
+      const clean = (value || '').trim();
+      if (!clean) return '';
+
+      if (/^https?:\/\//i.test(clean)) {
+        try {
+          const url = new URL(clean);
+          if (url.protocol !== 'https:' ||
+              !['instagram.com', 'www.instagram.com'].includes(url.hostname.toLowerCase()) ||
+              !/^\/[A-Za-z0-9._]+\/?$/.test(url.pathname)) return '';
+          return url.href;
+        } catch (e) {
+          return '';
+        }
+      }
+
+      const handle = clean.replace(/^@/, '');
+      if (!/^[A-Za-z0-9._]{1,30}$/.test(handle)) return '';
+      return `https://www.instagram.com/${encodeURIComponent(handle)}/`;
+    }
+
+    function getFacebookProfileUrl(value) {
+      const clean = (value || '').trim();
+      if (!clean) return '';
+
+      try {
+        const url = new URL(clean);
+        const host = url.hostname.toLowerCase();
+        if (url.protocol !== 'https:' ||
+            !(host === 'facebook.com' || host.endsWith('.facebook.com') || host === 'fb.com')) return '';
+        return url.href;
+      } catch (e) {
+        return '';
+      }
+    }
+
+    function buildCoherentClientFromEmail(email, customName = '', customIg = '', customAvatar = '') {
+      const normalizedEmail = (email || 'sofia@kaffe.mx').trim().toLowerCase();
+      const savedProfiles = getSavedClientProfiles();
+
+      if (savedProfiles[normalizedEmail]) {
+        const saved = savedProfiles[normalizedEmail];
+        return {
+          role: 'client',
+          email: normalizedEmail,
+          name: customName || saved.name,
+          instagram: customIg ? formatInstagramHandle(customIg, normalizedEmail) : saved.instagram,
+          facebook: saved.facebook || '',
+          avatar: customAvatar || DEFAULT_AVATAR,
+          memberSince: saved.memberSince || 'Noviembre 2026',
+          level: saved.level || 'Catador Local TJ',
+          stamps: Array.isArray(saved.stamps) ? saved.stamps : ['cafe-das-cortez'],
+          purchasedDrinks: Array.isArray(saved.purchasedDrinks) ? saved.purchasedDrinks : ['Flat White Das Cortez']
+        };
+      }
+
+      if (normalizedEmail === 'sofia@kaffe.mx') {
+        const defaultSofia = {
+          role: 'client',
+          email: normalizedEmail,
+          name: customName || 'Sofía Morales',
+          instagram: customIg ? formatInstagramHandle(customIg, normalizedEmail) : '@sofia.tij',
+          facebook: '',
+          avatar: customAvatar || CURATED_AVATARS[0],
+          memberSince: 'Enero 2024',
+          level: 'Catadora Embajadora TJ',
+          stamps: ['cafe-das-cortez', 'cafe-baristi', 'cafe-sospeso'],
+          purchasedDrinks: ['Flat White Das Cortez', 'Cortado Baja Roast', 'V60 Chiapas Honey']
+        };
+        saveClientProfileToStorage(defaultSofia);
+        return defaultSofia;
+      }
+
+      const localPart = normalizedEmail.split('@')[0] || 'amante.cafe';
+      const derivedInstagram = customIg ? formatInstagramHandle(customIg, normalizedEmail) : '';
+      const derivedName = customName || localPart
+        .split(/[._-]+/)
+        .filter(Boolean)
+        .map(w => w.charAt(0).toUpperCase() + w.slice(1))
+        .join(' ') || 'Amante del Café';
+
+      const coherentAvatar = customAvatar || DEFAULT_AVATAR;
+
+      const newProfile = {
+        role: 'client',
+        email: normalizedEmail,
+        name: derivedName,
+        instagram: derivedInstagram,
+        facebook: '',
+        avatar: coherentAvatar,
+        memberSince: 'Noviembre 2026',
+        level: 'Explorador de Grano TJ',
+        stamps: ['cafe-das-cortez'],
+        purchasedDrinks: ['Flat White Das Cortez']
+      };
+      saveClientProfileToStorage(newProfile);
+      return newProfile;
+    }
+
+    /* ------------------------------------------------------------------------
+       AUTENTICACIÓN (CLIENTE Y CAFETERÍA)
+       ------------------------------------------------------------------------ */
+    function updateAuthUI() {
+      const isClient = state.authRole === 'client';
+      const isLogin = state.authMode === 'login';
+
+      const roleClientBtn = document.getElementById('role-client-btn');
+      const roleCafeBtn = document.getElementById('role-cafe-btn');
+      const tabLogin = document.getElementById('tab-login');
+      const tabRegister = document.getElementById('tab-register');
+      if (!roleClientBtn || !roleCafeBtn || !tabLogin || !tabRegister) return;
+
+      roleClientBtn.classList.toggle('active', isClient);
+      roleCafeBtn.classList.toggle('active', !isClient);
+      tabLogin.classList.toggle('active', isLogin);
+      tabRegister.classList.toggle('active', !isLogin);
+
+      const banner = document.getElementById('role-indicator-banner');
+      if (banner) {
+        banner.innerHTML = isClient
+          ? `<i class="fa-solid fa-mug-hot" style="color: var(--wine-800);"></i><span>Acceso para Cliente</span>`
+          : `<i class="fa-solid fa-store" style="color: var(--wine-800);"></i><span>Acceso para Administrador</span>`;
+      }
+
+      document.getElementById('register-fields').classList.toggle('hidden', isLogin);
+      document.getElementById('client-reg-extra').classList.toggle('hidden', !isClient);
+      document.getElementById('cafe-reg-extra').classList.toggle('hidden', isClient);
+
+      document.getElementById('name-label').textContent = isClient ? 'Tu Nombre Completo' : 'Nombre de la Cafetería en Tijuana';
+      document.getElementById('auth-name').placeholder = isClient ? 'Ej. Sofía Morales' : 'Ej. Das Cortez';
+      document.getElementById('email-label').textContent = isClient ? 'Correo Electrónico' : 'Correo Corporativo de la Cafetería';
+      document.getElementById('auth-email').placeholder = isClient ? 'ejemplo@kaffe.mx' : 'barra@dascortez.mx';
+
+      const submitBtn = document.getElementById('auth-submit-btn');
+      if (submitBtn) {
+        if (isClient) {
+          submitBtn.textContent = isLogin ? 'Entrar como Cliente' : 'Crear Cuenta de Cliente';
+        } else {
+          submitBtn.textContent = isLogin ? 'Entrar como Cafetería' : 'Pagar $399 MXN y Registrar Cafetería';
+        }
+      }
+    }
+
+    function setAuthRole(role) {
+      state.authRole = role;
+      updateAuthUI();
+    }
+
+    function setAuthMode(mode) {
+      state.authMode = mode;
+      updateAuthUI();
+    }
+
+    function toggleRegSubPaymentFields() {
+      const method = document.getElementById('reg-sub-method').value;
+      document.getElementById('reg-sub-card-fields').classList.toggle('hidden', method !== 'card');
+      document.getElementById('reg-sub-spei-info').classList.toggle('hidden', method !== 'spei');
+    }
+
+    function selectAvatar(el, url) {
+      document.querySelectorAll('.avatar-option').forEach(opt => opt.classList.remove('selected'));
+      el.classList.add('selected');
+      state.selectedAvatar = url;
+    }
+
+    function handleAuthSubmit(e) {
+      e.preventDefault();
+      const email = (document.getElementById('auth-email').value || '').trim().toLowerCase() || (state.authRole === 'client' ? 'sofia@kaffe.mx' : 'barra@dascortez.mx');
+      const nameInput = document.getElementById('auth-name').value.trim();
+
+      if (state.authRole === 'client') {
+        const isRegister = state.authMode === 'register';
+        const igInput = isRegister ? document.getElementById('auth-ig').value.trim() : '';
+        state.currentUser = buildCoherentClientFromEmail(
+          email,
+          isRegister ? nameInput : '',
+          igInput,
+          isRegister ? state.selectedAvatar : ''
+        );
+        enterApp();
+      } else {
+        if (state.authMode === 'register') {
+          const rfc = document.getElementById('auth-rfc').value.trim().toUpperCase();
+          const address = document.getElementById('auth-address').value.trim();
+          const zone = document.getElementById('auth-zone').value;
+          const phone = document.getElementById('auth-phone').value.trim();
+          const subMethod = document.getElementById('reg-sub-method').value;
+
+          if (!nameInput || rfc.length < 12 || !address) {
+            showToast('Completa Nombre, RFC válido (12-13 caracteres) y Dirección en Tijuana.');
+            return;
+          }
+
+          let paymentLabel = 'Transferencia SPEI / OXXO Pay';
+          if (subMethod === 'card') {
+            const cardNum = document.getElementById('reg-card-number').value.replace(/\s+/g, '');
+            if (cardNum.length < 12) {
+              showToast('Ingresa un número de tarjeta válido para activar tu membresía de $399 MXN.');
+              return;
+            }
+            paymentLabel = `Tarjeta •••• ${cardNum.slice(-4)}`;
+          }
+
+          const newCafe = {
+            id: 'cafe-' + Date.now(),
+            name: nameInput,
+            rfc: rfc,
+            zone: zone,
+            address: address,
+            phone: phone || '664 000 0000',
+            cover: 'https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=800&q=80',
+            latLng: [32.5235, -117.0185],
+            bio: 'Barra de especialidad local registrada en Kaffe Tijuana.',
+            membership: {
+              plan: 'Kaffe Partner Mensual',
+              amount: 399,
+              status: 'active',
+              paymentMethod: paymentLabel,
+              lastPaidDate: '20 Nov 2026',
+              nextBillingDate: '20 Dic 2026',
+              receipts: [
+                {
+                  id: 'FAC-' + Math.floor(1000 + Math.random() * 8999),
+                  date: '20 Nov 2026',
+                  amount: 399,
+                  method: paymentLabel,
+                  status: 'Pagado'
+                }
+              ]
+            },
+            menu: [
+              { id: 'm-' + Date.now(), name: 'Espresso de la Casa', category: 'Espresso', price: 58, availableToday: true, img: 'https://images.unsplash.com/photo-1510591509098-f4fdc6d0ff04?w=400&q=80' }
+            ],
+            reviews: []
+          };
+          state.cafes.push(newCafe);
+          state.currentUser = { role: 'cafe', cafeId: newCafe.id, email };
+          enterApp();
+          showToast('¡Suscripción de $399 MXN/mes activada! Bienvenido a Kaffe');
+        } else {
+          const cafe = state.cafes[0];
+          ensureCafeMembership(cafe);
+          state.currentUser = { role: 'cafe', cafeId: cafe.id, email };
+          enterApp();
+          if (cafe.membership.status !== 'active') {
+            showToast('Tu membresía de $399 MXN/mes requiere renovación');
+          }
+        }
+      }
+    }
+
+    function logout() {
+      state.currentUser = null;
+      document.getElementById('main-app').classList.add('hidden');
+      document.getElementById('auth-view').classList.remove('hidden');
+    }
+
+    function enterApp() {
+      document.getElementById('auth-view').classList.add('hidden');
+      document.getElementById('main-app').classList.remove('hidden');
+
+      const isClient = state.currentUser.role === 'client';
+      document.getElementById('header-cart-btn').classList.toggle('hidden', !isClient);
+
+      renderBottomNav();
+      switchTab(isClient ? 'explorar' : 'pedidos');
+      updateCartBadge();
+    }
+
+    /* ------------------------------------------------------------------------
+       NAVEGACIÓN INFERIOR DINÁMICA
+       ------------------------------------------------------------------------ */
+    function renderBottomNav() {
+      const nav = document.getElementById('bottom-nav');
+      const isClient = state.currentUser.role === 'client';
+      nav.classList.toggle('cafe-nav', !isClient);
+      if (isClient) {
+        nav.innerHTML = `
+          <button class="nav-item" id="nav-explorar" onclick="switchTab('explorar')">
+            <i class="fa-solid fa-compass"></i>
+            <span>Explorar</span>
+          </button>
+          <button class="nav-item" id="nav-pedidos" onclick="switchTab('pedidos')">
+            <i class="fa-solid fa-receipt"></i>
+            <span>Pedidos</span>
+          </button>
+          <button class="nav-item" id="nav-perfil" onclick="switchTab('perfil')">
+            <i class="fa-solid fa-user-astronaut"></i>
+            <span>Mi Perfil</span>
+          </button>
+        `;
+      } else {
+        nav.innerHTML = `
+          <button class="nav-item" id="nav-pedidos" onclick="switchTab('pedidos')">
+            <i class="fa-solid fa-bell-concierge"></i>
+            <span>Mis pedidos</span>
+          </button>
+          <button class="nav-item" id="nav-menu" onclick="switchTab('menu')">
+            <i class="fa-solid fa-book-open"></i>
+            <span>Mi menú</span>
+          </button>
+          <button class="nav-item" id="nav-editar" onclick="switchTab('editar')">
+            <i class="fa-solid fa-pen-to-square"></i>
+            <span>Editar</span>
+          </button>
+          <button class="nav-item" id="nav-perfil" onclick="switchTab('perfil')">
+            <i class="fa-solid fa-store"></i>
+            <span>Mi Perfil</span>
+          </button>
+        `;
+      }
+    }
+
+    function switchTab(tab) {
+      state.activeTab = tab;
+      document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
+      const activeBtn = document.getElementById(`nav-${tab}`);
+      if (activeBtn) activeBtn.classList.add('active');
+
+      const container = document.getElementById('app-content');
+      if (state.currentUser.role === 'client') {
+        if (tab === 'explorar') renderClientExplore(container);
+        if (tab === 'pedidos') renderClientOrders(container);
+        if (tab === 'perfil') renderClientProfile(container);
+      } else {
+        if (tab === 'pedidos') renderCafeOrders(container);
+        if (tab === 'menu') renderCafeMenu(container);
+        if (tab === 'editar') renderCafeEdit(container);
+        if (tab === 'perfil') renderCafeProfile(container);
+      }
+    }
+
+    /* ------------------------------------------------------------------------
+       MAPA REAL DE TIJUANA (LEAFLET) CON GRANITO DE CAFÉ Y TACITA
+       ------------------------------------------------------------------------ */
+    function getCoffeeBeanMarkerHTML(cafeName, isSelected) {
+      return `
+        <div style="display:flex;flex-direction:column;align-items:center;transform:${isSelected ? 'scale(1.12)' : 'scale(1)'};transition:transform 0.2s;">
+          <svg width="32" height="32" viewBox="0 0 36 36">
+            <circle cx="18" cy="18" r="16" fill="${isSelected ? '#581224' : '#3B0A16'}" stroke="#C8A27C" stroke-width="2.5"/>
+            <ellipse cx="18" cy="18" rx="6.5" ry="10" transform="rotate(-24 18 18)" fill="#C8A27C"/>
+            <path d="M14.5 10.5 Q19 18 15 25.5" stroke="#3B0A16" stroke-width="2" fill="none" stroke-linecap="round"/>
+          </svg>
+          <span class="pin-label">${cafeName}</span>
+        </div>
+      `;
+    }
+
+    function getUserCupMarkerHTML() {
+      return `
+        <div style="display:flex;flex-direction:column;align-items:center;">
+          <svg width="34" height="34" viewBox="0 0 36 36">
+            <circle cx="18" cy="18" r="16" fill="#FAF6F0" stroke="#5C3A21" stroke-width="2.8"/>
+            <path d="M11 15 H22 V21 C22 23.5 20 25 16.5 25 C13 25 11 23.5 11 21 Z" fill="#6F4E37"/>
+            <path d="M22 16.5 H24.2 C25.3 16.5 26 17.2 26 18.3 C26 19.4 25.3 20.1 24.2 20.1 H22" stroke="#6F4E37" stroke-width="1.8" fill="none"/>
+            <path d="M14 11.5 Q14.8 9.8 14 8.5 M18 11.5 Q18.8 9.8 18 8.5" stroke="#8B5A2B" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+          </svg>
+          <span class="pin-label user-label">Tú</span>
+        </div>
+      `;
+    }
+
+    function addStreetMapTiles(map, onStatusChange = () => {}) {
+      const providers = [
+        {
+          url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',
+          attribution: 'Tiles &copy; Esri — Sources: Esri, HERE, Garmin, USGS, OpenStreetMap contributors'
+        },
+        {
+          url: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
+          options: { subdomains: 'abcd' },
+          attribution: '&copy; OpenStreetMap contributors &copy; CARTO'
+        },
+        {
+          url: 'https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png',
+          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap contributors</a>'
+        }
+      ];
+      let activeLayer = null;
+      let providerIndex = 0;
+
+      const tryNextProvider = () => {
+        if (activeLayer) map.removeLayer(activeLayer);
+        if (providerIndex >= providers.length) {
+          onStatusChange('No se pudo cargar el mapa. Revisa las restricciones de red e inténtalo de nuevo.');
+          return;
+        }
+
+        const provider = providers[providerIndex++];
+        const layer = L.tileLayer(provider.url, {
+          ...provider.options,
+          maxZoom: 19,
+          attribution: provider.attribution
+        });
+        let tileLoaded = false;
+        let fallbackTimer = null;
+
+        layer.on('tileload', () => {
+          tileLoaded = true;
+          if (fallbackTimer) window.clearTimeout(fallbackTimer);
+          onStatusChange('');
+        });
+        layer.on('tileerror', () => {
+          if (tileLoaded || fallbackTimer) return;
+          fallbackTimer = window.setTimeout(() => {
+            if (!tileLoaded) tryNextProvider();
+          }, 1200);
+        });
+
+        activeLayer = layer;
+        layer.addTo(map);
+      };
+
+      onStatusChange('Cargando mapa de Tijuana...');
+      tryNextProvider();
+    }
+
+    function initOrUpdateTijuanaMap(filteredCafes) {
+      const mapEl = document.getElementById('tijuana-real-map');
+      if (!mapEl) return;
+
+      const mapStatus = document.getElementById('tijuana-map-status');
+      const setMapStatus = (message) => {
+        if (!mapStatus) return;
+        mapStatus.textContent = message;
+        mapStatus.hidden = !message;
+      };
+
+      if (typeof L === 'undefined') {
+        setMapStatus('No se pudo cargar el mapa. Revisa tu conexión a internet e inténtalo de nuevo.');
+        return;
+      }
+
+      if (tijuanaMap) {
+        tijuanaMap.remove();
+        tijuanaMap = null;
+      }
+
+      tijuanaMap = L.map('tijuana-real-map', {
+        center: [32.5210, -117.0220],
+        zoom: 14,
+        minZoom: 10,
+        maxZoom: 19,
+        zoomControl: true,
+        attributionControl: true,
+        scrollWheelZoom: true
+      });
+
+      addStreetMapTiles(tijuanaMap, setMapStatus);
+      L.control.scale({ imperial: false, position: 'bottomright' }).addTo(tijuanaMap);
+
+      tijuanaLayerGroup = L.layerGroup().addTo(tijuanaMap);
+
+      // Pin de la Tacita (Usuario en Tijuana)
+      const userIcon = L.divIcon({
+        className: 'kaffe-leaflet-pin',
+        html: getUserCupMarkerHTML(),
+        iconSize: [54, 48],
+        iconAnchor: [27, 22]
+      });
+
+      L.marker([state.userCoords.lat, state.userCoords.lng], { icon: userIcon })
+        .addTo(tijuanaLayerGroup)
+        .bindPopup(`<strong>Tu ubicación</strong><br><span style="font-size:0.78rem;">${state.userCoords.label}</span>`);
+
+      // Pines de Granito de Café para cada cafetería en Tijuana
+      const selectedCafe = filteredCafes.find(c => c.id === state.selectedCafeForRoute) || filteredCafes[0];
+
+      if (selectedCafe && selectedCafe.latLng) {
+        L.polyline(
+          [[state.userCoords.lat, state.userCoords.lng], selectedCafe.latLng],
+          { color: '#581224', weight: 3, dashArray: '6, 6', opacity: 0.85 }
+        ).addTo(tijuanaLayerGroup);
+      }
+
+      filteredCafes.forEach(cafe => {
+        if (!cafe.latLng) return;
+        const isSel = selectedCafe && selectedCafe.id === cafe.id;
+        const dist = getDistanceKm(state.userCoords.lat, state.userCoords.lng, cafe.latLng[0], cafe.latLng[1]);
+        const icon = L.divIcon({
+          className: 'kaffe-leaflet-pin',
+          html: getCoffeeBeanMarkerHTML(cafe.name, isSel),
+          iconSize: [96, 50],
+          iconAnchor: [48, 22]
+        });
+
+        const marker = L.marker(cafe.latLng, { icon }).addTo(tijuanaLayerGroup);
+        marker.bindPopup(`
+          <div style="min-width:165px;">
+            <strong style="color:#3B0A16;font-size:0.9rem;">${cafe.name}</strong><br>
+            <span style="font-size:0.74rem;color:#5C4742;">${cafe.zone} • a ${dist} km</span><br>
+            <button type="button" onclick="openCafeDetail('${cafe.id}')" style="margin-top:6px;width:100%;padding:5px 8px;border:none;border-radius:99px;background:#581224;color:#FAF6F0;font-weight:700;font-size:0.74rem;cursor:pointer;">
+              Ver Menú y Ordenar
+            </button>
+          </div>
+        `);
+        marker.on('click', () => {
+          state.selectedCafeForRoute = cafe.id;
+        });
+      });
+
+      setTimeout(() => {
+        if (tijuanaMap) tijuanaMap.invalidateSize();
+      }, 80);
+    }
+
+    function getCafeCustomizationOptions(cafe) {
+      if (!cafe.customizationOptions) {
+        cafe.customizationOptions = {
+          milkTypes: ['Entera', 'Deslactosada', 'Avena'],
+          sweeteners: ['Azúcar', 'Stevia', 'Miel', 'Agave'],
+          syrups: ['Vainilla', 'Caramelo', 'Avellana'],
+          foams: ['Espuma de leche', 'Cold foam'],
+          maxCoffeeShots: 4,
+          maxMatchaGrams: 6
+        };
+      }
+      return cafe.customizationOptions;
+    }
+
+    function getCafeHoursSummary(cafe) {
+      if (!cafe.businessHours) return 'Horario por confirmar';
+      const ranges = [];
+
+      for (let index = 0; index < BUSINESS_DAYS.length;) {
+        const dayHours = cafe.businessHours[BUSINESS_DAYS[index].key];
+        if (!dayHours || !dayHours.open) {
+          index += 1;
+          continue;
+        }
+
+        let lastIndex = index;
+        while (lastIndex + 1 < BUSINESS_DAYS.length) {
+          const nextHours = cafe.businessHours[BUSINESS_DAYS[lastIndex + 1].key];
+          if (!nextHours || !nextHours.open || nextHours.start !== dayHours.start || nextHours.end !== dayHours.end) break;
+          lastIndex += 1;
+        }
+
+        const dayLabel = index === lastIndex
+          ? BUSINESS_DAYS[index].short
+          : `${BUSINESS_DAYS[index].short}–${BUSINESS_DAYS[lastIndex].short}`;
+        ranges.push(`${dayLabel} ${dayHours.start}–${dayHours.end}`);
+        index = lastIndex + 1;
+      }
+
+      return ranges.length ? ranges.join(' · ') : 'Cerrado toda la semana';
+    }
+
+    function renderCafeBusinessHours(cafe) {
+      if (!cafe.businessHours) {
+        return '<p style="font-size: 0.8rem; color: var(--mocha);">Horario por confirmar por el negocio.</p>';
+      }
+
+      return `
+        <div class="business-hours-list">
+          ${BUSINESS_DAYS.map(day => {
+            const hours = cafe.businessHours[day.key];
+            const isOpen = Boolean(hours && hours.open);
+            return `
+              <div class="business-hours-item">
+                <span>${day.label}</span>
+                <strong>${isOpen ? `${hours.start}–${hours.end}` : 'Cerrado'}</strong>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      `;
+    }
+
+    function getDrinkCustomizationType(item) {
+      const name = item.name.toLowerCase();
+      if (item.category === 'Matcha/Té' && (name.includes('matcha') || name.includes('usucha'))) return 'matcha';
+      if (['Espresso', 'Filtrados/V60', 'Cold Brew'].includes(item.category)) return 'coffee';
+      return null;
+    }
+
+    function renderCafeOptionCheckboxes(cafe, optionKey) {
+      const selectedOptions = getCafeCustomizationOptions(cafe)[optionKey];
+      return CAFE_CUSTOMIZATION_CATALOG[optionKey].map(option => `
+        <label class="customization-option">
+          <input type="checkbox" name="${optionKey}" value="${option}" ${selectedOptions.includes(option) ? 'checked' : ''}>
+          <span>${option}</span>
+        </label>
+      `).join('');
+    }
+
+    function renderDrinkOptionSelect(id, label, options, emptyLabel, baseMilk = '') {
+      return `
+        <div class="input-group">
+          <label for="${id}">${label}</label>
+          <select id="${id}" class="input-control" ${baseMilk ? `data-base-milk="${baseMilk}"` : ''} onchange="updateCustomizationPrice()">
+            ${emptyLabel ? `<option value="">${emptyLabel}</option>` : ''}
+            ${options.map((option, index) => `
+              <option value="${option}">${option}${baseMilk ? (index === 0 ? ' (incluida)' : ` (+$${DRINK_EXTRA_PRICE})`) : ` (+$${DRINK_EXTRA_PRICE})`}</option>
+            `).join('')}
+          </select>
+        </div>
+      `;
+    }
+
+    function renderDrinkQuantitySelect(id, label, minimum, maximum, unitSingular, unitPlural, includedQuantity) {
+      return `
+        <div class="input-group">
+          <label for="${id}">${label}</label>
+          <select id="${id}" class="input-control" onchange="updateCustomizationPrice()">
+            ${Array.from({ length: Math.max(0, maximum - minimum + 1) }, (_, index) => {
+              const quantity = minimum + index;
+              const extraCost = Math.max(0, quantity - includedQuantity) * DRINK_EXTRA_PRICE;
+              const unit = quantity === 1 ? unitSingular : unitPlural;
+              return `<option value="${quantity}">${quantity} ${unit}${extraCost ? ` (+$${extraCost})` : ' (incluido)'}</option>`;
+            }).join('')}
+          </select>
+        </div>
+      `;
+    }
+
+    function calculateCustomizationFee(type, customization) {
+      let fee = customization.milk !== customization.baseMilk ? DRINK_EXTRA_PRICE : 0;
+      if (customization.sweetener) fee += DRINK_EXTRA_PRICE;
+      if (customization.syrup) fee += DRINK_EXTRA_PRICE;
+      if (customization.foam) fee += DRINK_EXTRA_PRICE;
+      if (type === 'coffee') {
+        fee += Math.max(0, customization.shots - 1) * DRINK_EXTRA_PRICE;
+      } else {
+        fee += Math.max(0, customization.grams - 2) * DRINK_EXTRA_PRICE;
+      }
+      return fee;
+    }
+
+    function collectDrinkCustomization(type) {
+      const milkSelect = document.getElementById('drink-milk');
+      if (!milkSelect || !milkSelect.value) return null;
+
+      const customization = {
+        milk: milkSelect.value,
+        baseMilk: milkSelect.dataset.baseMilk,
+        sweetener: document.getElementById('drink-sweetener').value,
+        syrup: document.getElementById('drink-syrup').value,
+        foam: document.getElementById('drink-foam').value
+      };
+      if (type === 'coffee') {
+        customization.shots = Number(document.getElementById('drink-shots').value);
+      } else {
+        customization.grams = Number(document.getElementById('drink-matcha-grams').value);
+      }
+
+      return {
+        customizations: {
+          milk: customization.milk,
+          sweetener: customization.sweetener,
+          syrup: customization.syrup,
+          foam: customization.foam,
+          ...(type === 'coffee' ? { shots: customization.shots } : { grams: customization.grams })
+        },
+        extraFee: calculateCustomizationFee(type, customization)
+      };
+    }
+
+    function updateCustomizationPrice() {
+      const type = document.getElementById('drink-customization-type').value;
+      const basePrice = Number(document.getElementById('drink-customization-base-price').value);
+      const selection = collectDrinkCustomization(type);
+      if (!selection) return;
+
+      document.getElementById('drink-extra-price').textContent = `$${selection.extraFee} MXN`;
+      document.getElementById('drink-customization-total').textContent = `$${basePrice + selection.extraFee} MXN`;
+    }
+
+    function formatCustomizationSummary(customizations) {
+      if (!customizations) return '';
+      const parts = [];
+      if (customizations.milk) parts.push(`Leche: ${customizations.milk}`);
+      if (customizations.sweetener) parts.push(`Endulzante: ${customizations.sweetener}`);
+      if (customizations.shots) parts.push(`${customizations.shots} shot${customizations.shots === 1 ? '' : 's'}`);
+      if (customizations.syrup) parts.push(`Jarabe: ${customizations.syrup}`);
+      if (customizations.grams) parts.push(`Matcha: ${customizations.grams} g`);
+      if (customizations.foam) parts.push(`Foam: ${customizations.foam}`);
+      return parts.join(' • ');
+    }
+
+    function centerTijuanaMap() {
+      if (tijuanaMap) {
+        tijuanaMap.setView([32.5210, -117.0220], 13);
+        showToast('Mapa centrado en Tijuana, B.C.');
+      }
+    }
+
+    function locateUserInTijuana() {
+      if (!navigator.geolocation) {
+        showToast('Geolocalización no disponible en este navegador');
+        return;
+      }
+      showToast('Obteniendo tu ubicación GPS...');
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          state.userCoords = {
+            lat: pos.coords.latitude,
+            lng: pos.coords.longitude,
+            label: 'Tu ubicación GPS actual'
+          };
+          state.usingRealGps = true;
+          renderClientExplore(document.getElementById('app-content'));
+          if (tijuanaMap) tijuanaMap.setView([pos.coords.latitude, pos.coords.longitude], 14);
+          showToast('Tacita actualizada con tu ubicación real');
+        },
+        () => {
+          showToast('Mostrando ubicación de referencia en Zona Río / Cacho');
+        },
+        { timeout: 6000 }
+      );
+    }
+
+    /* ------------------------------------------------------------------------
+       8. VISTAS DEL PERFIL CLIENTE (EXPLORAR, PEDIDOS Y MI PERFIL)
+       ------------------------------------------------------------------------ */
+    function renderClientExplore(container) {
+      const topCafes = getWeeklyTopCafes().slice(0, 3);
+      const filteredCafes = state.cafes
+        .filter(cafe => {
+          const q = state.searchQuery.toLowerCase();
+          const matchText = !q ||
+            cafe.name.toLowerCase().includes(q) ||
+            cafe.zone.toLowerCase().includes(q) ||
+            cafe.menu.some(m => m.name.toLowerCase().includes(q));
+
+          const matchDrink = state.drinkFilter === 'Todos' ||
+            cafe.menu.some(m => m.availableToday && m.category === state.drinkFilter) ||
+            cafe.specialty === state.drinkFilter;
+
+          const matchZone = state.zoneFilter === 'Todas' || cafe.zone === state.zoneFilter;
+
+          const minPrice = cafe.menu.length ? Math.min(...cafe.menu.map(m => m.price)) : null;
+          const matchPrice = state.priceFilter === 'Todos' ||
+            (minPrice !== null && state.priceFilter === 'econ' && minPrice <= 70) ||
+            (minPrice !== null && state.priceFilter === 'mid' && minPrice > 70);
+
+          return matchText && matchDrink && matchZone && matchPrice;
+        })
+        .sort((a, b) => {
+          if (state.sortFilter === 'top') return getCafeRating(b) - getCafeRating(a);
+          if (state.sortFilter === 'low') return getCafeRating(a) - getCafeRating(b);
+          return 0;
+        });
+
+      container.innerHTML = `
+        <!-- Top Semanal Tijuana -->
+        <div class="section-title">
+          <h3>Top Semana</h3>
+        </div>
+        <div class="top-weekly-scroll">
+          ${topCafes.map((cafe, idx) => `
+            <div class="top-cafe-card" onclick="openCafeDetail('${cafe.id}')">
+              <span class="rank-medal">#${idx + 1} • ★ ${getCafeRating(cafe)}</span>
+              <span style="font-size: 0.7rem; color: var(--coffee-latte); font-weight: 700;">${cafe.zone}</span>
+              <h4 class="font-serif" style="font-size: 1.08rem; margin: 3px 0 4px;">${cafe.name}</h4>
+              <p style="font-size: 0.75rem; color: var(--beige-200);">Reseñas</p>
+            </div>
+          `).join('')}
+        </div>
+
+        <!-- Buscador y Filtros -->
+        <div class="search-bar-box">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input type="text" class="input-control" placeholder="Buscar cafetería, colonia o bebida en Tijuana..."
+            value="${state.searchQuery}" oninput="state.searchQuery = this.value; renderClientExplore(document.getElementById('app-content'))">
+        </div>
+
+        <div class="filter-chips">
+          ${['Todos', 'Espresso', 'Filtrados/V60', 'Cold Brew', 'Matcha/Té', 'Panadería', 'Postres'].map(cat => `
+            <button type="button" class="chip ${state.drinkFilter === cat ? 'active' : ''}"
+              onclick="state.drinkFilter = '${cat}'; renderClientExplore(document.getElementById('app-content'))">
+              ${cat}
+            </button>
+          `).join('')}
+        </div>
+
+        <div class="advanced-filters">
+          <select class="select-mini" onchange="state.zoneFilter = this.value; renderClientExplore(document.getElementById('app-content'))">
+            <option value="Todas" ${state.zoneFilter === 'Todas' ? 'selected' : ''}>Zona: Todas</option>
+            <option value="Col. Cacho" ${state.zoneFilter === 'Col. Cacho' ? 'selected' : ''}>Col. Cacho</option>
+            <option value="Zona Río" ${state.zoneFilter === 'Zona Río' ? 'selected' : ''}>Zona Río</option>
+            <option value="Agua Caliente" ${state.zoneFilter === 'Agua Caliente' ? 'selected' : ''}>Agua Caliente</option>
+            <option value="Hipódromo" ${state.zoneFilter === 'Hipódromo' ? 'selected' : ''}>Hipódromo</option>
+            <option value="Centro" ${state.zoneFilter === 'Centro' ? 'selected' : ''}>Centro / Revu</option>
+            <option value="Playas de Tijuana" ${state.zoneFilter === 'Playas de Tijuana' ? 'selected' : ''}>Playas TJ</option>
+          </select>
+
+          <select class="select-mini" onchange="state.priceFilter = this.value; renderClientExplore(document.getElementById('app-content'))">
+            <option value="Todos" ${state.priceFilter === 'Todos' ? 'selected' : ''}>Precio: Todos</option>
+            <option value="econ" ${state.priceFilter === 'econ' ? 'selected' : ''}>Hasta $70 MXN</option>
+            <option value="mid" ${state.priceFilter === 'mid' ? 'selected' : ''}>Especialidad +$70</option>
+          </select>
+
+          <select class="select-mini" onchange="state.sortFilter = this.value; renderClientExplore(document.getElementById('app-content'))">
+            <option value="top" ${state.sortFilter === 'top' ? 'selected' : ''}>★ Mejor rankeado</option>
+            <option value="low" ${state.sortFilter === 'low' ? 'selected' : ''}>★ Peor rankeado</option>
+          </select>
+        </div>
+
+        <!-- Mapa Real Interactivo de Tijuana -->
+        <div class="section-title">
+          <h3>Mapa de Tijuana</h3>
+        </div>
+        <div class="map-container">
+          <div id="tijuana-real-map" aria-label="Mapa interactivo de Tijuana"></div>
+          <div id="tijuana-map-status" class="map-status" role="status" aria-live="polite" hidden></div>
+          <div class="map-controls-bar">
+            <button type="button" class="map-ctrl-btn" onclick="centerTijuanaMap()">
+              <i class="fa-solid fa-city"></i> Tijuana
+            </button>
+            <button type="button" class="map-ctrl-btn ${state.usingRealGps ? 'active' : ''}" onclick="locateUserInTijuana()">
+              <i class="fa-solid fa-location-crosshairs"></i> Mi GPS
+            </button>
+          </div>
+          <div class="map-legend">
+            <span><i class="fa-solid fa-seedling" style="color: var(--wine-800);"></i> Cafetería</span>
+            <span><i class="fa-solid fa-mug-hot" style="color: var(--coffee-dark);"></i> Tú (Tacita)</span>
+          </div>
+        </div>
+
+        <!-- Listado de Cafeterías -->
+        <div class="section-title">
+          <h3>Barras Locales (${filteredCafes.length})</h3>
+          <span style="font-size: 0.75rem; color: var(--mocha);">Pick-up disponible hoy</span>
+        </div>
+
+        <div class="cafe-grid">
+        ${filteredCafes.map(cafe => {
+          const rating = getCafeRating(cafe);
+          const dist = cafe.latLng ? getDistanceKm(state.userCoords.lat, state.userCoords.lng, cafe.latLng[0], cafe.latLng[1]) : '1.2';
+          const minPrice = cafe.menu.length ? Math.min(...cafe.menu.map(m => m.price)) : null;
+          return `
+            <div class="cafe-card" onclick="openCafeDetail('${cafe.id}')">
+              <img src="${cafe.cover}" alt="${cafe.name}" class="cafe-cover">
+              <div class="cafe-body">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 4px;">
+                  <div>
+                    <h4 class="font-serif" style="font-size: 1.12rem; color: var(--wine-900);">${cafe.name}</h4>
+                    <span style="font-size: 0.76rem; color: var(--mocha);">
+                      <i class="fa-solid fa-location-dot" style="color: var(--wine-800);"></i> ${cafe.zone} • a ${dist} km
+                    </span>
+                  </div>
+                  <span class="badge badge-coffee">★ ${rating || 'Nuevo'} (${cafe.reviews.length})</span>
+                </div>
+                <p style="font-size: 0.8rem; color: var(--mocha); margin: 6px 0 10px;">${cafe.bio}</p>
+                <p style="font-size: 0.74rem; color: var(--coffee-dark); margin-bottom: 10px;">
+                  <i class="fa-regular fa-clock"></i> ${getCafeHoursSummary(cafe)}
+                </p>
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <span style="font-size: 0.78rem; font-weight: 700; color: var(--coffee-dark);">${minPrice === null ? 'Menú por confirmar' : `Desde $${minPrice} MXN`}</span>
+                  <span class="btn btn-primary btn-sm">Ordenar Pick-Up</span>
+                </div>
+              </div>
+            </div>
+          `;
+        }).join('')}
+        </div>
+      `;
+
+      initOrUpdateTijuanaMap(filteredCafes);
+    }
+
+    function openCafeDetail(cafeId) {
+      const cafe = state.cafes.find(c => c.id === cafeId);
+      if (!cafe) return;
+      state.selectedCafeForRoute = cafe.id;
+      const rating = getCafeRating(cafe);
+      const modalBody = document.getElementById('cafe-modal-body');
+
+      modalBody.innerHTML = `
+        <div class="sheet-handle"></div>
+        <img src="${cafe.cover}" style="width: 100%; height: 150px; object-fit: cover; border-radius: 16px; margin-bottom: 12px;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px;">
+          <div>
+            <h2 class="font-serif" style="font-size: 1.38rem; color: var(--wine-900);">${cafe.name}</h2>
+            <p style="font-size: 0.78rem; color: var(--mocha);"><i class="fa-solid fa-location-dot"></i> ${cafe.address}</p>
+          </div>
+          <span class="badge badge-coffee" style="font-size: 0.82rem;">★ ${rating || 'Nuevo'}</span>
+        </div>
+
+        <p style="font-size: 0.82rem; color: var(--espresso); margin-bottom: 14px;">${cafe.bio}</p>
+
+        <div class="card" style="margin-bottom: 14px;">
+          <h4 class="font-serif" style="font-size: 1rem; color: var(--wine-900); margin-bottom: 8px;">Días y horario</h4>
+          ${renderCafeBusinessHours(cafe)}
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+          <h4 class="font-serif" style="font-size: 1.05rem; color: var(--wine-900);">Opciones Disponibles Hoy</h4>
+          <span class="badge badge-wine">Pick-up en barra</span>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 18px;">
+          ${cafe.menu.some(item => item.availableToday) ? cafe.menu.filter(m => m.availableToday).map(item => `
+            <div class="card" style="display: flex; align-items: center; gap: 10px; padding: 10px;">
+              <img src="${item.img}" style="width: 56px; height: 56px; border-radius: 12px; object-fit: cover;">
+              <div style="flex: 1;">
+                <strong style="font-size: 0.9rem; display: block;">${item.name}</strong>
+                <span style="font-size: 0.75rem; color: var(--mocha);">${item.category} • $${item.price} MXN</span>
+              </div>
+              <button type="button" class="btn btn-primary btn-sm" onclick="addToCart('${cafe.id}', '${item.id}')">
+                <i class="fa-solid ${getDrinkCustomizationType(item) ? 'fa-sliders' : 'fa-plus'}"></i>
+                ${getDrinkCustomizationType(item) ? 'Personalizar' : 'Agregar'}
+              </button>
+            </div>
+          `).join('') : '<p style="font-size: 0.8rem; color: var(--mocha);">Esta barra aún no ha publicado productos.</p>'}
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+          <h4 class="font-serif" style="font-size: 1.05rem; color: var(--wine-900);">Reseñas de Clientes (${cafe.reviews.length})</h4>
+          <button type="button" class="btn btn-coffee btn-sm" onclick="openReviewModal('${cafe.id}')">
+            <i class="fa-solid fa-star"></i> Calificar
+          </button>
+        </div>
+
+        ${cafe.reviews.length === 0 ? `
+          <p style="font-size: 0.8rem; color: var(--mocha);">Sé el primero en compartir tu experiencia aquí.</p>
+        ` : cafe.reviews.map(rev => `
+          <div class="card" style="margin-bottom: 10px; padding: 12px;">
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+              <img src="${rev.userAvatar}" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover;">
+              <div style="flex: 1;">
+                <strong style="font-size: 0.84rem; display: block;">${rev.userName}</strong>
+                <span style="font-size: 0.7rem; color: var(--mocha);">${rev.date}</span>
+              </div>
+              <span style="color: var(--coffee-warm); font-weight: 800; font-size: 0.82rem;">${'★'.repeat(rev.rating)}</span>
+            </div>
+            <p style="font-size: 0.82rem; color: var(--espresso);">${rev.comment}</p>
+            ${rev.photo ? `<img src="${rev.photo}" style="width: 100%; height: 120px; object-fit: cover; border-radius: 10px; margin-top: 8px;">` : ''}
+          </div>
+        `).join('')}
+      `;
+
+      document.getElementById('cafe-modal').classList.add('open');
+    }
+
+    function openProductCustomization(cafeId, itemId) {
+      const cafe = state.cafes.find(c => c.id === cafeId);
+      const item = cafe && cafe.menu.find(m => m.id === itemId);
+      if (!cafe || !item) {
+        showToast('No se encontró la bebida para personalizar');
+        return;
+      }
+
+      const type = getDrinkCustomizationType(item);
+      if (!type) {
+        addToCart(cafeId, itemId);
+        return;
+      }
+
+      const options = getCafeCustomizationOptions(cafe);
+      const baseMilk = options.milkTypes[0] || '';
+      const quantitySelect = type === 'coffee'
+        ? renderDrinkQuantitySelect('drink-shots', 'Shots de café', 1, options.maxCoffeeShots, 'shot', 'shots', 1)
+        : renderDrinkQuantitySelect('drink-matcha-grams', 'Gramos de matcha', 2, options.maxMatchaGrams, 'g', 'g', 2);
+      const milkSelect = renderDrinkOptionSelect('drink-milk', 'Tipo de leche', options.milkTypes, '', baseMilk);
+      const sweetenerSelect = renderDrinkOptionSelect('drink-sweetener', 'Endulzante', options.sweeteners, 'Sin endulzante');
+      const syrupSelect = renderDrinkOptionSelect('drink-syrup', 'Jarabe', options.syrups, 'Sin jarabe');
+      const foamSelect = renderDrinkOptionSelect('drink-foam', 'Foam', options.foams, 'Sin foam');
+      const customizationFields = type === 'coffee'
+        ? `${milkSelect}${sweetenerSelect}${quantitySelect}${syrupSelect}${foamSelect}`
+        : `${milkSelect}${sweetenerSelect}${syrupSelect}${quantitySelect}${foamSelect}`;
+      const modalBody = document.getElementById('cafe-modal-body');
+      modalBody.innerHTML = `
+        <div class="sheet-handle"></div>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="openCafeDetail('${cafe.id}')" style="margin-bottom: 12px;">
+          <i class="fa-solid fa-arrow-left"></i> Volver al menú
+        </button>
+        <h2 class="font-serif" style="font-size: 1.32rem; color: var(--wine-900); margin-bottom: 4px;">Personaliza ${item.name}</h2>
+        <p style="font-size: 0.78rem; color: var(--mocha); margin-bottom: 12px;">${cafe.name} • Precio base: $${item.price} MXN</p>
+        <p class="customization-note">Cada cambio de leche, endulzante, jarabe o foam cuesta $${DRINK_EXTRA_PRICE}. Cada ${type === 'coffee' ? 'shot extra' : 'gramo de matcha extra'} también cuesta $${DRINK_EXTRA_PRICE}.</p>
+
+        <form id="drink-customization-form" onsubmit="confirmDrinkCustomization(event, '${cafe.id}', '${item.id}', '${type}')">
+          <input type="hidden" id="drink-customization-type" value="${type}">
+          <input type="hidden" id="drink-customization-base-price" value="${item.price}">
+          ${customizationFields}
+
+          <div class="card" style="margin: 12px 0;">
+            <div style="display: flex; justify-content: space-between; font-size: 0.84rem;">
+              <span>Extras</span><strong id="drink-extra-price">$0 MXN</strong>
+            </div>
+            <div style="display: flex; justify-content: space-between; margin-top: 6px; color: var(--wine-900);">
+              <strong>Total por bebida</strong><strong id="drink-customization-total">$${item.price} MXN</strong>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary btn-block">Agregar al pedido</button>
+        </form>
+      `;
+      document.getElementById('cafe-modal').classList.add('open');
+      updateCustomizationPrice();
+    }
+
+    function confirmDrinkCustomization(event, cafeId, itemId, type) {
+      event.preventDefault();
+      const cafe = state.cafes.find(c => c.id === cafeId);
+      const item = cafe && cafe.menu.find(m => m.id === itemId);
+      const selection = collectDrinkCustomization(type);
+      if (!cafe || !item || !selection) {
+        showToast('No se pudieron guardar las opciones de la bebida');
+        return;
+      }
+
+      addToCart(cafeId, itemId, {
+        customizations: selection.customizations,
+        extraFee: selection.extraFee,
+        price: item.price + selection.extraFee
+      });
+      closeModal('cafe-modal');
+    }
+
+    function addToCart(cafeId, itemId, selection = null) {
+      const cafe = state.cafes.find(c => c.id === cafeId);
+      const item = cafe && cafe.menu.find(m => m.id === itemId);
+      if (!cafe || !item) {
+        showToast('No se pudo agregar la bebida al pedido');
+        return;
+      }
+
+      if (!selection && getDrinkCustomizationType(item)) {
+        openProductCustomization(cafeId, itemId);
+        return;
+      }
+
+      if (state.cart.length > 0 && state.cart[0].cafeId !== cafeId) {
+        state.cart = [];
+        showToast(`Bolsa reiniciada para pedir en ${cafe.name}`);
+      }
+
+      const customizations = selection ? selection.customizations : null;
+      const price = selection ? selection.price : item.price;
+      const existing = state.cart.find(cartItem =>
+        cartItem.itemId === itemId &&
+        JSON.stringify(cartItem.customizations || null) === JSON.stringify(customizations)
+      );
+      if (existing) {
+        existing.qty += 1;
+      } else {
+        state.cart.push({
+          cafeId: cafe.id,
+          cafeName: cafe.name,
+          itemId: item.id,
+          name: item.name,
+          basePrice: item.price,
+          extraFee: selection ? selection.extraFee : 0,
+          price,
+          customizations,
+          qty: 1
+        });
+      }
+
+      updateCartBadge();
+      showToast(`${item.name} agregado a tu bolsa por $${price} MXN`);
+    }
+
+    function updateCartBadge() {
+      const count = state.cart.reduce((acc, i) => acc + i.qty, 0);
+      const badge = document.getElementById('cart-count');
+      if (badge) {
+        badge.textContent = count;
+        badge.classList.toggle('hidden', count === 0);
+      }
+    }
+
+    function openCartModal() {
+      const modalBody = document.getElementById('cart-modal-body');
+      if (state.cart.length === 0) {
+        modalBody.innerHTML = `
+          <div class="sheet-handle"></div>
+          <div style="text-align: center; padding: 24px 10px;">
+            <h3 class="font-serif" style="color: var(--wine-900); margin-bottom: 6px;">Tu bolsa está vacía</h3>
+            <p style="font-size: 0.84rem; color: var(--mocha); margin-bottom: 16px;">Elige bebidas disponibles hoy en cualquier cafetería de Tijuana para recoger.</p>
+            <button type="button" class="btn btn-primary" onclick="closeModal('cart-modal')">Explorar Cafeterías</button>
+          </div>
+        `;
+      } else {
+        const total = state.cart.reduce((sum, i) => sum + i.price * i.qty, 0);
+        const half = Math.ceil(total / 2);
+        modalBody.innerHTML = `
+          <div class="sheet-handle"></div>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+            <div>
+              <h2 class="font-serif" style="font-size: 1.32rem; color: var(--wine-900);">Tu Pedido Pick-Up</h2>
+              <p style="font-size: 0.78rem; color: var(--mocha);">${state.cart[0].cafeName} • Tijuana</p>
+            </div>
+            <span class="badge badge-coffee">Total: $${total} MXN</span>
+          </div>
+
+          ${state.cart.map((item, idx) => `
+            <div class="card" style="display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; margin-bottom: 8px;">
+              <div>
+                <strong style="font-size: 0.88rem;">${item.qty}x ${item.name}</strong>
+                <span style="display: block; font-size: 0.75rem; color: var(--mocha);">${item.extraFee ? `$${item.basePrice} base + $${item.extraFee} extras c/u • ` : ''}Total: $${item.price * item.qty} MXN</span>
+                ${item.customizations ? `<span class="customization-summary">${formatCustomizationSummary(item.customizations)}</span>` : ''}
+              </div>
+              <button type="button" class="btn btn-secondary btn-sm" onclick="state.cart.splice(${idx}, 1); updateCartBadge(); openCartModal();">
+                <i class="fa-solid fa-trash"></i>
+              </button>
+            </div>
+          `).join('')}
+
+          <form onsubmit="submitPickupOrder(event)" style="margin-top: 12px;">
+            <div class="input-group">
+              <label>Hora estimada para recoger en barra</label>
+              <select id="order-pickup-time" class="input-control">
+                <option value="En 15 minutos">En 15 minutos</option>
+                <option value="En 30 minutos">En 30 minutos</option>
+                <option value="En 45 minutos">En 45 minutos</option>
+              </select>
+            </div>
+
+            <div class="input-group">
+              <label>Esquema de Pago</label>
+              <select id="order-pay-scheme" class="input-control">
+                <option value="full">Pagar 100% en línea ($${total} MXN)</option>
+                <option value="half">Pagar 50% ahora ($${half} MXN) y 50% al recoger ($${total - half} MXN)</option>
+              </select>
+            </div>
+
+            <div class="input-group">
+              <label>Método de Pago</label>
+              <select id="order-pay-method" class="input-control">
+                <option value="Tarjeta">💳 Tarjeta de Crédito / Débito</option>
+                <option value="Efectivo">💵 Efectivo al recoger / Mixto</option>
+              </select>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block">
+              <i class="fa-solid fa-check"></i> Confirmar Orden Pick-Up
+            </button>
+          </form>
+        `;
+      }
+      document.getElementById('cart-modal').classList.add('open');
+    }
+
+    function submitPickupOrder(e) {
+      e.preventDefault();
+      if (state.cart.length === 0) return;
+
+      const total = state.cart.reduce((sum, i) => sum + i.price * i.qty, 0);
+      const scheme = document.getElementById('order-pay-scheme').value;
+      const method = document.getElementById('order-pay-method').value;
+      const pickupTime = document.getElementById('order-pickup-time').value;
+      const cafeId = state.cart[0].cafeId;
+      const cafeName = state.cart[0].cafeName;
+
+      const paidAmount = scheme === 'half' ? Math.ceil(total / 2) : total;
+      const pendingAmount = total - paidAmount;
+
+      const newOrder = {
+        id: 'ORD-' + Math.floor(100 + Math.random() * 899),
+        cafeId,
+        cafeName,
+        clientName: state.currentUser.name,
+        items: [...state.cart],
+        total,
+        pickupTime,
+        paymentScheme: scheme === 'half' ? '50% Anticipo / 50% al Recoger' : '100% Pagado en Línea',
+        paidAmount,
+        pendingAmount,
+        paymentMethod: method,
+        status: 'Preparando en barra',
+        time: 'Ahora mismo'
+      };
+
+      state.orders.unshift(newOrder);
+
+      // Sellar Pasaporte de Café de Tijuana automáticamente
+      if (!state.currentUser.stamps.includes(cafeId)) {
+        state.currentUser.stamps.push(cafeId);
+      }
+      state.cart.forEach(item => {
+        if (!state.currentUser.purchasedDrinks.includes(item.name)) {
+          state.currentUser.purchasedDrinks.push(item.name);
+        }
+      });
+      saveClientProfileToStorage(state.currentUser);
+
+      state.cart = [];
+      updateCartBadge();
+      closeModal('cart-modal');
+      closeModal('cafe-modal');
+      switchTab('pedidos');
+      showToast(`¡Orden ${newOrder.id} enviada y sello añadido a tu pasaporte!`);
+    }
+
+    function renderClientOrders(container) {
+      const myOrders = state.orders.filter(o => o.clientName === state.currentUser.name || o.clientName === 'Sofía Morales');
+      container.innerHTML = `
+        <div class="section-title">
+          <h3>Mis Pedidos Pick-Up</h3>
+          <span class="badge badge-wine">${myOrders.length} órdenes</span>
+        </div>
+
+        ${myOrders.map(ord => `
+          <div class="card" style="margin-bottom: 12px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+              <strong style="color: var(--wine-900);">${ord.id} • ${ord.cafeName}</strong>
+              <span class="badge ${ord.status === 'Listo para recoger' ? 'badge-coffee' : ord.status === 'Entregado' ? 'badge-green' : 'badge-wine'}">
+                ${ord.status}
+              </span>
+            </div>
+            <p style="font-size: 0.84rem; margin-bottom: 6px;">
+              ${ord.items.map(i => `${i.qty}x ${i.name}${i.customizations ? ` (${formatCustomizationSummary(i.customizations)})` : ''}`).join(', ')}
+            </p>
+            <div style="background: var(--beige-100); padding: 8px 10px; border-radius: 10px; font-size: 0.77rem; margin-bottom: 10px;">
+              <div><strong>Recoger:</strong> ${ord.pickupTime} • <strong>Método:</strong> ${ord.paymentMethod}</div>
+              <div>
+                <span style="color: var(--sage); font-weight: 700;">Pagado: $${ord.paidAmount} MXN</span> • 
+                <span style="color: var(--wine-800); font-weight: 700;">Pendiente en barra: $${ord.pendingAmount} MXN</span>
+              </div>
+            </div>
+            <button type="button" class="btn btn-outline btn-sm btn-block" onclick="openReviewModal('${ord.cafeId}')">
+              <i class="fa-solid fa-star"></i> Calificar Experiencia en ${ord.cafeName}
+            </button>
+          </div>
+        `).join('')}
+      `;
+    }
+
+    function openReviewModal(cafeId) {
+      const cafe = state.cafes.find(c => c.id === cafeId);
+      if (!cafe) return;
+      state.reviewRating = 5;
+
+      const modalBody = document.getElementById('review-modal-body');
+      modalBody.innerHTML = `
+        <div class="sheet-handle"></div>
+        <h2 class="font-serif" style="font-size: 1.3rem; color: var(--wine-900); margin-bottom: 4px;">Reseña para ${cafe.name}</h2>
+        <p style="font-size: 0.78rem; color: var(--mocha); margin-bottom: 14px;">Tu calificación suma al ranking semanal de Tijuana</p>
+
+        <form onsubmit="submitCafeReview(event, '${cafe.id}')">
+          <div class="input-group">
+            <label>Calificación (1 a 5 estrellas)</label>
+            <div class="star-rating" id="review-stars">
+              ${[1, 2, 3, 4, 5].map(n => `
+                <i class="fa-solid fa-star active" onclick="setReviewStars(${n})"></i>
+              `).join('')}
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label>Tu experiencia en la barra</label>
+            <textarea id="review-comment" class="input-control" rows="3" placeholder="Cuéntanos sobre el grano, extracción y atención..." required></textarea>
+          </div>
+
+          <div class="input-group">
+            <label>Foto de tu bebida</label>
+            <input type="url" id="review-photo" class="input-control" placeholder="https://...">
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-block">Publicar Reseña</button>
+        </form>
+      `;
+      document.getElementById('review-modal').classList.add('open');
+    }
+
+    function setReviewStars(count) {
+      state.reviewRating = count;
+      document.querySelectorAll('#review-stars i').forEach((star, idx) => {
+        star.classList.toggle('active', idx < count);
+      });
+    }
+
+    function submitCafeReview(e, cafeId) {
+      e.preventDefault();
+      const cafe = state.cafes.find(c => c.id === cafeId);
+      const comment = document.getElementById('review-comment').value.trim();
+      const photo = document.getElementById('review-photo').value.trim();
+
+      cafe.reviews.unshift({
+        id: 'rev-' + Date.now(),
+        userName: state.currentUser.name,
+        userAvatar: state.currentUser.avatar,
+        rating: state.reviewRating,
+        comment,
+        photo,
+        date: 'Justo ahora'
+      });
+
+      closeModal('review-modal');
+      openCafeDetail(cafeId);
+      showToast(`¡Gracias! Calificaste con ${state.reviewRating} estrellas`);
+    }
+
+    function renderClientProfile(container) {
+      const user = state.currentUser;
+      const instagramUrl = getInstagramProfileUrl(user.instagram);
+      const facebookUrl = getFacebookProfileUrl(user.facebook);
+      container.innerHTML = `
+        <!-- Perfil Social Elegante del Cliente -->
+        <div class="social-profile-header">
+          <button type="button" class="btn btn-sm" style="position: absolute; top: 14px; right: 14px; background: rgba(250,246,240,0.18); color: var(--beige-50); border: 1px solid rgba(200,162,124,0.45);" onclick="openEditProfileModal()">
+            <i class="fa-solid fa-pen"></i> Editar Perfil
+          </button>
+
+          <img src="${user.avatar}" alt="${user.name}" class="profile-avatar-lg">
+          <h2 class="font-serif" style="font-size: 1.42rem;">${user.name}</h2>
+          <p style="font-size: 0.74rem; color: var(--beige-200); margin-top: 2px;">${user.email} • Miembro desde ${user.memberSince}</p>
+
+          <div class="profile-stats">
+            <div class="stat-item">
+              <strong>${user.stamps.length}</strong>
+              <span>Cafeterías TJ</span>
+            </div>
+            <div class="stat-item">
+              <strong>${user.purchasedDrinks.length}</strong>
+              <span>Bebidas</span>
+            </div>
+            <div class="stat-item">
+              <strong>${state.orders.length}</strong>
+              <span>Pedidos</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pasaporte de Café de Tijuana -->
+        <div class="passport-book">
+          <div class="passport-header">
+            <div>
+              <h3 class="font-serif" style="font-size: 1.15rem; color: var(--beige-50);">Pasaporte de Café</h3>
+            </div>
+            <span class="badge badge-coffee">${user.stamps.length} / ${state.cafes.length} Sellos</span>
+          </div>
+
+          <div class="stamps-grid">
+            ${state.cafes.map(cafe => {
+              const hasStamp = user.stamps.includes(cafe.id);
+              return `
+                <div class="stamp-slot ${hasStamp ? 'stamped' : ''}">
+                  <div class="stamp-circle" style="${hasStamp ? '' : 'opacity:0.4;'}">
+                    <i class="fa-solid ${hasStamp ? 'fa-stamp' : 'fa-mug-hot'}"></i>
+                  </div>
+                  <strong style="font-size: 0.68rem; line-height: 1.15; color: ${hasStamp ? 'var(--beige-50)' : 'var(--beige-300)'};">${cafe.name}</strong>
+                  <span style="font-size: 0.6rem; color: var(--coffee-latte); margin-top: 2px;">${hasStamp ? 'Sellado' : cafe.zone}</span>
+                </div>
+              `;
+            }).join('')}
+          </div>
+        </div>
+
+        <div class="profile-social-links" aria-label="Redes sociales">
+          ${instagramUrl ? `<a class="profile-social-link" href="${instagramUrl}" target="_blank" rel="noopener noreferrer" aria-label="Instagram" title="Instagram"><img src="https://thumb.wikimedia.org/wikipedia/commons/thumb/9/95/Instagram_logo_2022.svg/1280px-Instagram_logo_2022.svg.png?utm_source=es.wikipedia.org&utm_campaign=index&utm_content=thumbnail" alt="Instagram"></a>` : ''}
+          <a class="profile-social-link" ${facebookUrl ? `href="${facebookUrl}" target="_blank" rel="noopener noreferrer"` : `href="#" onclick="openEditProfileModal(); return false;"`} aria-label="Facebook" title="Facebook"><img src="https://thumb.wikimedia.org/wikipedia/commons/thumb/0/05/Facebook_Logo_%282019%29.png/1280px-Facebook_Logo_%282019%29.png?utm_source=es.wikipedia.org&utm_campaign=index&utm_content=thumbnail" alt="Facebook"></a>
+          ${!instagramUrl && !facebookUrl ? '<p class="profile-social-empty">Agrega tus redes sociales desde Editar Perfil</p>' : ''}
+        </div>
+      `;
+    }
+
+    function openEditProfileModal() {
+      const user = state.currentUser;
+      state.editingAvatarPreview = user.avatar;
+      const modalBody = document.getElementById('edit-profile-modal-body');
+
+      modalBody.innerHTML = `
+        <div class="sheet-handle"></div>
+        <h2 class="font-serif" style="font-size: 1.32rem; color: var(--wine-900); margin-bottom: 4px;">Editar Mi Perfil</h2>
+        <form onsubmit="saveEditedClientProfile(event)">
+          <div style="text-align: center; margin-bottom: 12px;">
+            <img id="edit-avatar-preview" src="${user.avatar}" style="width: 78px; height: 78px; border-radius: 50%; object-fit: cover; border: 3px solid var(--wine-800);">
+          </div>
+
+          <div class="input-group">
+            <label>Nombre</label>
+            <input type="text" id="edit-profile-name" class="input-control" value="${user.name}" required>
+          </div>
+
+          <div class="input-group">
+            <label>Instagram (usuario o enlace de perfil)</label>
+            <input type="text" id="edit-profile-ig" class="input-control" value="${user.instagram}" placeholder="@tu.usuario">
+          </div>
+
+          <div class="input-group">
+            <label>Facebook (enlace de perfil)</label>
+            <input type="url" id="edit-profile-facebook" class="input-control" value="${user.facebook || ''}" placeholder="https://www.facebook.com/tu.perfil">
+          </div>
+
+          <div class="input-group">
+            <label>Subir foto personal</label>
+            <input type="file" accept="image/*" class="input-control" onchange="handleAvatarFileUpload(event)">
+          </div>
+
+          <div class="input-group">
+            <label>Selecciona un avatar</label>
+            <div class="avatar-selector">
+              ${CURATED_AVATARS.map(url => `
+                <div class="avatar-option ${user.avatar === url ? 'selected' : ''}" onclick="pickEditAvatar('${url}', this)">
+                  <img src="${url}" alt="Avatar">
+                </div>
+              `).join('')}
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-block">Guardar Cambios</button>
+        </form>
+      `;
+
+      document.getElementById('edit-profile-modal').classList.add('open');
+    }
+
+    function pickEditAvatar(url, el) {
+      state.editingAvatarPreview = url;
+      document.getElementById('edit-avatar-preview').src = url;
+      document.querySelectorAll('#edit-profile-modal-body .avatar-option').forEach(o => o.classList.remove('selected'));
+      if (el) el.classList.add('selected');
+    }
+
+    function handleAvatarFileUpload(e) {
+      const file = e.target.files && e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        state.editingAvatarPreview = reader.result;
+        document.getElementById('edit-avatar-preview').src = reader.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function saveEditedClientProfile(e) {
+      e.preventDefault();
+      const oldName = state.currentUser.name;
+      const newName = document.getElementById('edit-profile-name').value.trim() || oldName;
+      const rawInstagram = document.getElementById('edit-profile-ig').value.trim();
+      const instagramUrl = getInstagramProfileUrl(rawInstagram);
+      const rawFacebook = document.getElementById('edit-profile-facebook').value.trim();
+      const facebookUrl = getFacebookProfileUrl(rawFacebook);
+      if ((rawInstagram && !instagramUrl) || (rawFacebook && !facebookUrl)) {
+        showToast('Revisa los enlaces de Instagram y Facebook');
+        return;
+      }
+      const newIg = rawInstagram
+        ? (/^https?:\/\//i.test(rawInstagram) ? instagramUrl : formatInstagramHandle(rawInstagram, state.currentUser.email))
+        : '';
+      const newAvatar = state.editingAvatarPreview || state.currentUser.avatar;
+
+      state.currentUser.name = newName;
+      state.currentUser.instagram = newIg;
+      state.currentUser.facebook = facebookUrl;
+      state.currentUser.avatar = newAvatar;
+
+      state.cafes.forEach(cafe => {
+        cafe.reviews.forEach(rev => {
+          if (rev.userName === oldName) {
+            rev.userName = newName;
+            rev.userAvatar = newAvatar;
+          }
+        });
+      });
+
+      saveClientProfileToStorage(state.currentUser);
+      closeModal('edit-profile-modal');
+      renderClientProfile(document.getElementById('app-content'));
+      showToast('Perfil actualizado correctamente');
+    }
+
+    /* ------------------------------------------------------------------------
+       9. VISTAS DEL PERFIL CAFETERÍA (PEDIDOS, EDITAR Y MI PERFIL CON MEMBRESÍA)
+       ------------------------------------------------------------------------ */
+    function ensureCafeMembership(cafe) {
+      if (!cafe.membership) {
+        cafe.membership = {
+          plan: 'Kaffe Partner Mensual',
+          amount: 399,
+          status: 'active',
+          paymentMethod: 'Tarjeta •••• 4821',
+          lastPaidDate: '01 Nov 2026',
+          nextBillingDate: '01 Dic 2026',
+          receipts: [
+            { id: 'FAC-9041', date: '01 Nov 2026', amount: 399, method: 'Tarjeta •••• 4821', status: 'Pagado' }
+          ]
+        };
+      }
+      return cafe.membership;
+    }
+
+    function renderMembershipAlertBanner(cafe) {
+      const mem = ensureCafeMembership(cafe);
+      if (mem.status === 'active') return '';
+      return `
+        <div class="membership-alert-banner">
+          <div style="display: flex; align-items: flex-start; gap: 10px;">
+            <i class="fa-solid fa-circle-exclamation" style="color: var(--coffee-latte); font-size: 1.25rem; margin-top: 2px;"></i>
+            <div style="flex: 1;">
+              <strong style="display: block; font-size: 0.92rem; margin-bottom: 3px;">Membresía Kaffe Partner Vencida ($399 MXN/mes)</strong>
+              <p style="font-size: 0.78rem; color: var(--beige-200); margin-bottom: 10px;">
+                Renueva tu mensualidad de <strong>$399 MXN</strong> para mantener tu cafetería visible en el mapa de Tijuana y seguir recibiendo pedidos pick-up.
+              </p>
+              <button type="button" class="btn btn-sm" style="background: var(--beige-50); color: var(--wine-900); font-weight: 700;" onclick="openMembershipModal()">
+                <i class="fa-solid fa-credit-card"></i> Renovar ahora ($399 MXN)
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderCafeOrders(container) {
+      const cafe = state.cafes.find(c => c.id === state.currentUser.cafeId) || state.cafes[0];
+      const cafeOrders = state.orders.filter(o => o.cafeId === cafe.id);
+
+      container.innerHTML = `
+        ${renderMembershipAlertBanner(cafe)}
+        <div class="section-title">
+          <h3>Mis pedidos</h3>
+          <span class="badge badge-wine">${cafeOrders.length} órdenes</span>
+        </div>
+
+        ${cafeOrders.length === 0 ? `
+          <div class="card" style="text-align: center; padding: 26px;">
+            <p style="color: var(--mocha);">Aún no hay pedidos pendientes para recoger.</p>
+          </div>
+        ` : cafeOrders.map(ord => `
+          <div class="card" style="margin-bottom: 12px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+              <strong style="color: var(--wine-900);">${ord.id} • ${ord.clientName}</strong>
+              <span class="badge ${ord.status === 'Listo para recoger' ? 'badge-coffee' : ord.status === 'Entregado' ? 'badge-green' : 'badge-wine'}">
+                ${ord.status}
+              </span>
+            </div>
+            <p style="font-size: 0.85rem; margin-bottom: 6px;">
+              ${ord.items.map(i => `${i.qty}x ${i.name}${i.customizations ? ` (${formatCustomizationSummary(i.customizations)})` : ''}`).join(', ')}
+            </p>
+            <div style="background: var(--beige-100); padding: 8px 10px; border-radius: 10px; font-size: 0.78rem; margin-bottom: 10px;">
+              <div><strong>Pago:</strong> ${ord.paymentScheme} (${ord.paymentMethod})</div>
+              <div>
+                <span style="color: var(--sage); font-weight: 700;">Pagado: $${ord.paidAmount}</span> • 
+                <span style="color: var(--wine-800); font-weight: 700;">Cobrar en barra: $${ord.pendingAmount}</span>
+              </div>
+            </div>
+            <div style="display: flex; gap: 8px;">
+              <button type="button" class="btn btn-secondary btn-sm" style="flex: 1;" onclick="updateOrderStatus('${ord.id}', 'Listo para recoger')">
+                Marcar Listo
+              </button>
+              <button type="button" class="btn btn-primary btn-sm" style="flex: 1;" onclick="updateOrderStatus('${ord.id}', 'Entregado')">
+                Entregado
+              </button>
+            </div>
+          </div>
+        `).join('')}
+      `;
+    }
+
+    function updateOrderStatus(orderId, newStatus) {
+      const ord = state.orders.find(o => o.id === orderId);
+      if (ord) {
+        ord.status = newStatus;
+        renderCafeOrders(document.getElementById('app-content'));
+        showToast(`Pedido ${orderId} actualizado a "${newStatus}"`);
+      }
+    }
+
+    function renderCafeMenu(container) {
+      const cafe = state.cafes.find(c => c.id === state.currentUser.cafeId) || state.cafes[0];
+      container.innerHTML = `
+        <div class="section-title">
+          <h3>Mi menú</h3>
+          <span class="badge badge-wine">${cafe.menu.length} productos</span>
+        </div>
+        ${cafe.menu.length ? cafe.menu.map(item => `
+          <div class="card" style="display: flex; align-items: center; gap: 10px; padding: 10px; margin-bottom: 10px;">
+            <img src="${item.img}" alt="${item.name}" style="width: 58px; height: 58px; border-radius: 10px; object-fit: cover;">
+            <div style="flex: 1;">
+              <strong style="font-size: 0.9rem; display: block;">${item.name}</strong>
+              <span style="font-size: 0.78rem; color: var(--mocha);">${item.category} • $${item.price} MXN</span>
+            </div>
+            <span class="badge ${item.availableToday ? 'badge-green' : 'badge-wine'}">
+              ${item.availableToday ? 'Disponible' : 'Pausado'}
+            </span>
+          </div>
+        `).join('') : `
+          <div class="card" style="text-align: center; padding: 24px;">
+            <p style="color: var(--mocha);">Aún no has publicado productos en tu menú.</p>
+          </div>
+        `}
+        <button type="button" class="btn btn-primary btn-block" onclick="switchTab('editar')">
+          <i class="fa-solid fa-pen-to-square"></i> Administrar catálogo
+        </button>
+      `;
+    }
+
+    function renderCafeEdit(container) {
+      const cafe = state.cafes.find(c => c.id === state.currentUser.cafeId) || state.cafes[0];
+      const customizationOptions = getCafeCustomizationOptions(cafe);
+      const businessHours = cafe.businessHours || {};
+
+      container.innerHTML = `
+        ${renderMembershipAlertBanner(cafe)}
+        <div class="section-title">
+          <h3>Información, Catálogo y Ubicación</h3>
+        </div>
+
+        <!-- Nueva Sección: Editar Foto de Portada y Descripción de la Cafetería -->
+        <div class="card" style="margin-bottom: 16px;">
+          <h4 class="font-serif" style="font-size: 1.05rem; color: var(--wine-900); margin-bottom: 10px;">
+            Foto y Descripción de la Cafetería
+          </h4>
+          <form onsubmit="saveCafeInfoDetails(event)">
+            <div class="input-group">
+              <label>Ubicación e indicaciones para llegar</label>
+              <textarea id="cafe-address-input" class="input-control" rows="2" placeholder="Calle, número, colonia o referencias" required>${cafe.address || ''}</textarea>
+            </div>
+            <div style="margin-bottom: 12px; position: relative;">
+              <img id="cafe-cover-preview" src="${cafe.cover}" alt="${cafe.name}" style="width: 100%; height: 145px; object-fit: cover; border-radius: 14px; border: 1.5px solid var(--beige-300); display: block;">
+              <span class="badge badge-wine" style="position: absolute; bottom: 8px; right: 8px;">Vista previa</span>
+            </div>
+
+            <div class="input-group">
+              <label>Subir nueva foto desde tu dispositivo</label>
+              <input type="file" accept="image/*" class="input-control" onchange="handleCafeCoverFileUpload(event)">
+            </div>
+
+            <div class="input-group">
+              <label>O pegar URL de imagen</label>
+              <input type="url" id="cafe-cover-url-input" class="input-control" value="${cafe.cover}" placeholder="https://..." oninput="previewCafeCoverUrl(this.value)">
+            </div>
+
+            <div class="input-group">
+              <label>Descripción de la cafetería</label>
+              <textarea id="cafe-bio-input" class="input-control" rows="3" placeholder="Describe tu café, métodos de extracción y ambiente en Tijuana..." required>${cafe.bio}</textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block btn-sm">
+              <i class="fa-solid fa-floppy-disk"></i> Guardar información
+            </button>
+          </form>
+        </div>
+
+        <div class="card" style="margin-bottom: 16px;">
+          <h4 class="font-serif" style="font-size: 1.05rem; color: var(--wine-900); margin-bottom: 6px;">Días y horario de atención</h4>
+          <form onsubmit="saveCafeBusinessHours(event)">
+            ${BUSINESS_DAYS.map(day => {
+              const hours = businessHours[day.key] || {};
+              const isOpen = Boolean(hours.open);
+              return `
+                <div class="business-hours-row">
+                  <label class="business-hours-day">
+                    <input type="checkbox" id="business-open-${day.key}" ${isOpen ? 'checked' : ''} onchange="toggleBusinessHours('${day.key}')">
+                    <span>${day.label}</span>
+                  </label>
+                  <div class="business-hours-time-range">
+                    <input type="time" id="business-start-${day.key}" class="input-control" value="${hours.start || '09:00'}" ${isOpen ? 'required' : 'disabled'}>
+                    <span>a</span>
+                    <input type="time" id="business-end-${day.key}" class="input-control" value="${hours.end || '18:00'}" ${isOpen ? 'required' : 'disabled'}>
+                  </div>
+                </div>
+              `;
+            }).join('')}
+            <button type="submit" class="btn btn-primary btn-block btn-sm" style="margin-top: 12px;">Guardar horario</button>
+          </form>
+        </div>
+
+        <div class="card" style="margin-bottom: 16px;">
+          <h4 class="font-serif" style="font-size: 1.05rem; color: var(--wine-900); margin-bottom: 6px;">Pin en Mapa</h4>
+          <div style="height: 175px; border-radius: 14px; overflow: hidden; border: 1.5px solid var(--beige-300);">
+            <div id="cafe-picker-map"></div>
+          </div>
+          <p id="cafe-pin-coordinates" style="font-size: 0.72rem; color: var(--mocha); margin-top: 6px;">
+            Pin: ${cafe.latLng ? `${cafe.latLng[0].toFixed(5)}, ${cafe.latLng[1].toFixed(5)}` : 'sin colocar'}
+          </p>
+        </div>
+
+        <div class="card" style="margin-bottom: 16px;">
+          <h4 class="font-serif" style="font-size: 1.05rem; color: var(--wine-900); margin-bottom: 10px;">Agregar Producto al Menú</h4>
+          <form onsubmit="addCafeMenuItem(event)">
+            <div class="input-group">
+              <label>Nombre del producto</label>
+              <input type="text" id="new-item-name" class="input-control" placeholder="Ej. Rol de canela o pastel de chocolate" required>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+              <div class="input-group">
+                <label>Categoría</label>
+                <select id="new-item-cat" class="input-control">
+                  <option value="Espresso">Espresso</option>
+                  <option value="Filtrados/V60">Filtrados/V60</option>
+                  <option value="Cold Brew">Cold Brew</option>
+                  <option value="Matcha/Té">Matcha/Té</option>
+                  <option value="Panadería">Panadería</option>
+                  <option value="Postres">Postres</option>
+                </select>
+              </div>
+              <div class="input-group">
+                <label>Precio ($ MXN)</label>
+                <input type="number" id="new-item-price" class="input-control" placeholder="75" min="20" required>
+              </div>
+            </div>
+            <div class="input-group">
+              <label>Foto del producto</label>
+              <input type="url" id="new-item-image" class="input-control" placeholder="https://..." required>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block btn-sm">
+              <i class="fa-solid fa-plus"></i> Publicar Producto
+            </button>
+          </form>
+        </div>
+
+        <div class="card" style="margin-bottom: 16px;">
+          <h4 class="font-serif" style="font-size: 1.05rem; color: var(--wine-900); margin-bottom: 6px;">Opciones para personalizar bebidas</h4>
+          <form onsubmit="saveCafeCustomizationOptions(event)">
+            <div class="input-group">
+              <label>Tipos de leche</label>
+              <div class="customization-option-grid">${renderCafeOptionCheckboxes(cafe, 'milkTypes')}</div>
+            </div>
+            <div class="input-group">
+              <label>Endulzantes disponibles</label>
+              <div class="customization-option-grid">${renderCafeOptionCheckboxes(cafe, 'sweeteners')}</div>
+            </div>
+            <div class="input-group">
+              <label>Jarabes disponibles</label>
+              <div class="customization-option-grid">${renderCafeOptionCheckboxes(cafe, 'syrups')}</div>
+            </div>
+            <div class="input-group">
+              <label>Foams disponibles</label>
+              <div class="customization-option-grid">${renderCafeOptionCheckboxes(cafe, 'foams')}</div>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+              <div class="input-group">
+                <label for="cafe-max-coffee-shots">Máximo de shots</label>
+                <input type="number" id="cafe-max-coffee-shots" class="input-control" min="1" max="8" value="${customizationOptions.maxCoffeeShots}" required>
+              </div>
+              <div class="input-group">
+                <label for="cafe-max-matcha-grams">Máximo de gramos de matcha</label>
+                <input type="number" id="cafe-max-matcha-grams" class="input-control" min="2" max="10" value="${customizationOptions.maxMatchaGrams}" required>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block btn-sm">Guardar opciones disponibles</button>
+          </form>
+        </div>
+
+        <h4 class="font-serif" style="font-size: 1.05rem; color: var(--wine-900); margin-bottom: 10px;">Disponibilidad del Día</h4>
+        ${cafe.menu.map(item => `
+          <div class="card" style="display: flex; align-items: center; gap: 10px; padding: 10px; margin-bottom: 10px;">
+            <img src="${item.img}" style="width: 54px; height: 54px; border-radius: 10px; object-fit: cover;">
+            <div style="flex: 1;">
+              <strong style="font-size: 0.9rem; display: block;">${item.name}</strong>
+              <span style="font-size: 0.78rem; color: var(--mocha);">${item.category} • $${item.price} MXN</span>
+            </div>
+            <button type="button" class="btn btn-sm ${item.availableToday ? 'btn-primary' : 'btn-secondary'}" onclick="toggleMenuItemToday('${item.id}')">
+              ${item.availableToday ? 'Disponible hoy' : 'Pausado'}
+            </button>
+          </div>
+        `).join('')}
+      `;
+
+      initCafeLocationPickerMap(cafe);
+    }
+
+    function toggleBusinessHours(dayKey) {
+      const isOpen = document.getElementById(`business-open-${dayKey}`).checked;
+      document.getElementById(`business-start-${dayKey}`).disabled = !isOpen;
+      document.getElementById(`business-end-${dayKey}`).disabled = !isOpen;
+    }
+
+    function saveCafeBusinessHours(event) {
+      event.preventDefault();
+      const cafe = state.cafes.find(c => c.id === state.currentUser.cafeId) || state.cafes[0];
+      const businessHours = {};
+
+      for (const day of BUSINESS_DAYS) {
+        const isOpen = document.getElementById(`business-open-${day.key}`).checked;
+        if (!isOpen) {
+          businessHours[day.key] = { open: false };
+          continue;
+        }
+
+        const start = document.getElementById(`business-start-${day.key}`).value;
+        const end = document.getElementById(`business-end-${day.key}`).value;
+        if (!start || !end || start >= end) {
+          showToast(`Revisa el horario de ${day.label}; el cierre debe ser después de la apertura`);
+          return;
+        }
+        businessHours[day.key] = { open: true, start, end };
+      }
+
+      cafe.businessHours = businessHours;
+      renderCafeEdit(document.getElementById('app-content'));
+      showToast('Horario de atención actualizado');
+    }
+
+    function saveCafeCustomizationOptions(event) {
+      event.preventDefault();
+      const cafe = state.cafes.find(c => c.id === state.currentUser.cafeId) || state.cafes[0];
+      const form = event.currentTarget;
+      const selectedOptions = key => Array.from(
+        form.querySelectorAll(`input[name="${key}"]:checked`)
+      ).map(input => input.value);
+      const milkTypes = selectedOptions('milkTypes');
+      const maxCoffeeShots = Number(form.querySelector('#cafe-max-coffee-shots').value);
+      const maxMatchaGrams = Number(form.querySelector('#cafe-max-matcha-grams').value);
+
+      if (milkTypes.length === 0) {
+        showToast('Activa al menos un tipo de leche disponible');
+        return;
+      }
+      if (!Number.isInteger(maxCoffeeShots) || maxCoffeeShots < 1 || maxCoffeeShots > 8) {
+        showToast('El máximo de shots debe ser entre 1 y 8');
+        return;
+      }
+      if (!Number.isInteger(maxMatchaGrams) || maxMatchaGrams < 2 || maxMatchaGrams > 10) {
+        showToast('El máximo de matcha debe ser entre 2 y 10 gramos');
+        return;
+      }
+
+      cafe.customizationOptions = {
+        milkTypes,
+        sweeteners: selectedOptions('sweeteners'),
+        syrups: selectedOptions('syrups'),
+        foams: selectedOptions('foams'),
+        maxCoffeeShots,
+        maxMatchaGrams
+      };
+      renderCafeEdit(document.getElementById('app-content'));
+      showToast('Opciones disponibles guardadas');
+    }
+
+    function previewCafeCoverUrl(url) {
+      const clean = (url || '').trim();
+      const img = document.getElementById('cafe-cover-preview');
+      if (img && clean) img.src = clean;
+    }
+
+    function handleCafeCoverFileUpload(e) {
+      const file = e.target.files && e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        const img = document.getElementById('cafe-cover-preview');
+        const input = document.getElementById('cafe-cover-url-input');
+        if (img) img.src = reader.result;
+        if (input) input.value = reader.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function saveCafeInfoDetails(e) {
+      e.preventDefault();
+      const cafe = state.cafes.find(c => c.id === state.currentUser.cafeId) || state.cafes[0];
+      const newAddress = document.getElementById('cafe-address-input').value.trim();
+      const newBio = document.getElementById('cafe-bio-input').value.trim();
+      const newCover = (document.getElementById('cafe-cover-url-input').value || '').trim();
+
+      if (!newAddress) {
+        showToast('Escribe la ubicación e indicaciones para llegar');
+        return;
+      }
+
+      cafe.address = newAddress;
+      if (newBio) cafe.bio = newBio;
+      if (newCover) cafe.cover = newCover;
+
+      renderCafeEdit(document.getElementById('app-content'));
+      showToast('Ubicación e información de la cafetería actualizadas');
+    }
+
+    function updateCafePinCoordinates(cafe) {
+      const coordinates = document.getElementById('cafe-pin-coordinates');
+      if (coordinates && cafe.latLng) {
+        coordinates.textContent = `Pin: ${cafe.latLng[0].toFixed(5)}, ${cafe.latLng[1].toFixed(5)}`;
+      }
+    }
+
+    function initCafeLocationPickerMap(cafe) {
+      const el = document.getElementById('cafe-picker-map');
+      if (!el) return;
+      if (typeof L === 'undefined') {
+        el.textContent = 'No se pudo cargar el mapa. Revisa tu conexión a internet.';
+        return;
+      }
+      if (cafePickerMap) {
+        cafePickerMap.remove();
+        cafePickerMap = null;
+      }
+
+      const coords = cafe.latLng || [32.5178, -117.0226];
+      cafePickerMap = L.map('cafe-picker-map', {
+        center: coords,
+        zoom: 14,
+        zoomControl: true,
+        attributionControl: true,
+        scrollWheelZoom: true
+      });
+
+      addStreetMapTiles(cafePickerMap);
+
+      const icon = L.divIcon({
+        className: 'kaffe-leaflet-pin',
+        html: getCoffeeBeanMarkerHTML(cafe.name, true),
+        iconSize: [96, 50],
+        iconAnchor: [48, 22]
+      });
+
+      cafePickerMarker = L.marker(coords, { icon, draggable: true }).addTo(cafePickerMap);
+      cafePickerMarker.on('dragend', (ev) => {
+        const pos = ev.target.getLatLng();
+        cafe.latLng = [Number(pos.lat.toFixed(5)), Number(pos.lng.toFixed(5))];
+        updateCafePinCoordinates(cafe);
+        showToast('Ubicación de tu cafetería actualizada en Tijuana');
+      });
+
+      cafePickerMap.on('click', (ev) => {
+        cafe.latLng = [Number(ev.latlng.lat.toFixed(5)), Number(ev.latlng.lng.toFixed(5))];
+        cafePickerMarker.setLatLng(ev.latlng);
+        updateCafePinCoordinates(cafe);
+        showToast('Ubicación actualizada en el mapa de Tijuana');
+      });
+
+      setTimeout(() => {
+        if (cafePickerMap) cafePickerMap.invalidateSize();
+      }, 80);
+    }
+
+    function addCafeMenuItem(e) {
+      e.preventDefault();
+      const cafe = state.cafes.find(c => c.id === state.currentUser.cafeId) || state.cafes[0];
+      const name = document.getElementById('new-item-name').value.trim();
+      const category = document.getElementById('new-item-cat').value;
+      const price = Number(document.getElementById('new-item-price').value);
+      const image = document.getElementById('new-item-image').value.trim();
+      let imageUrl;
+      try {
+        imageUrl = new URL(image);
+        if (!['http:', 'https:'].includes(imageUrl.protocol)) throw new Error('URL de foto inválida');
+      } catch (error) {
+        showToast('Agrega una URL válida para la foto del producto');
+        return;
+      }
+
+      cafe.menu.unshift({
+        id: 'm-' + Date.now(),
+        name,
+        category,
+        price,
+        availableToday: true,
+        img: imageUrl.href
+      });
+      renderCafeEdit(document.getElementById('app-content'));
+      showToast(`${name} agregado a tu menú`);
+    }
+
+    function toggleMenuItemToday(itemId) {
+      const cafe = state.cafes.find(c => c.id === state.currentUser.cafeId) || state.cafes[0];
+      const item = cafe.menu.find(m => m.id === itemId);
+      if (item) {
+        item.availableToday = !item.availableToday;
+        renderCafeEdit(document.getElementById('app-content'));
+        showToast(item.availableToday ? 'Producto activado para hoy' : 'Producto pausado por hoy');
+      }
+    }
+
+    function renderCafeProfile(container) {
+      const cafe = state.cafes.find(c => c.id === state.currentUser.cafeId) || state.cafes[0];
+      const mem = ensureCafeMembership(cafe);
+      const isActive = mem.status === 'active';
+      const avg = getCafeRating(cafe);
+
+      container.innerHTML = `
+        ${renderMembershipAlertBanner(cafe)}
+
+        <!-- Cabecera de Cafetería -->
+        <div class="social-profile-header" style="text-align: left; padding: 20px;">
+          <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 12px;">
+            <img src="${cafe.cover}" alt="${cafe.name}" style="width: 72px; height: 72px; border-radius: 18px; object-fit: cover; border: 2.5px solid var(--coffee-latte);">
+            <div style="flex: 1;">
+              <h2 class="font-serif" style="font-size: 1.35rem; line-height: 1.2;">${cafe.name}</h2>
+              <p style="font-size: 0.78rem; color: var(--beige-200); margin-top: 3px;">RFC: ${cafe.rfc}</p>
+              <p style="font-size: 0.78rem; color: var(--beige-200); margin-top: 3px;">
+                <i class="fa-solid fa-location-dot"></i> ${cafe.address}
+              </p>
+            </div>
+          </div>
+
+          <div class="profile-stats">
+            <div class="stat-item">
+              <strong>★ ${avg || 'Nuevo'}</strong>
+              <span>Calificación</span>
+            </div>
+            <div class="stat-item">
+              <strong>${cafe.reviews.length}</strong>
+              <span>Reseñas</span>
+            </div>
+            <div class="stat-item">
+              <strong>${cafe.menu.length}</strong>
+              <span>Productos</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-title">
+          <h3>Reseñas de clientes</h3>
+          <span class="badge badge-wine">${cafe.reviews.length}</span>
+        </div>
+        ${cafe.reviews.length ? cafe.reviews.map(review => `
+          <div class="card" style="margin-bottom: 10px; padding: 12px;">
+            <div style="display: flex; align-items: center; gap: 9px; margin-bottom: 8px;">
+              <img src="${review.userAvatar}" alt="${review.userName}" style="width: 38px; height: 38px; border-radius: 50%; object-fit: cover;">
+              <div>
+                <strong style="display: block; color: var(--wine-900);">${review.userName}</strong>
+                <span style="font-size: 0.74rem; color: var(--coffee-warm);">${'★'.repeat(review.rating)}${'☆'.repeat(5 - review.rating)}</span>
+                <span style="font-size: 0.72rem; color: var(--mocha);"> • ${review.date}</span>
+              </div>
+            </div>
+            <p style="font-size: 0.82rem; color: var(--espresso);">${review.comment}</p>
+            ${review.photo ? `<img src="${review.photo}" alt="Foto adjunta a la reseña" style="width: 100%; max-height: 180px; object-fit: cover; border-radius: 10px; margin-top: 8px;">` : ''}
+          </div>
+        `).join('') : '<p class="card" style="font-size: 0.82rem; color: var(--mocha);">Aún no tienes reseñas.</p>'}
+
+        <!-- Sección Dedicada: Membresía Kaffe Partner ($399 MXN / mes) -->
+        <div class="section-title">
+          <h3><i class="fa-solid fa-crown" style="color: var(--coffee-warm);"></i> Membresía</h3>
+          <span class="badge ${isActive ? 'badge-green' : 'badge-wine'}">
+            ${isActive ? '● Activa' : '● Vencida'}
+          </span>
+        </div>
+
+        <div class="card" style="margin-bottom: 16px; border: 1.5px solid ${isActive ? 'rgba(59, 110, 82, 0.35)' : 'var(--wine-700)'};">
+          <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--beige-200); padding-bottom: 12px; margin-bottom: 12px;">
+            <div>
+              <span style="font-size: 0.74rem; color: var(--mocha); font-weight: 700; text-transform: uppercase;">Plan Mensual Negocio</span>
+              <h4 class="font-serif" style="font-size: 1.35rem; color: var(--wine-900);">$399 MXN <span style="font-size: 0.8rem; font-family: var(--font-sans); color: var(--mocha); font-weight: 500;">/ mes</span></h4>
+            </div>
+            <div style="text-align: right;">
+              <span class="badge badge-coffee">${mem.paymentMethod}</span>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; background: var(--beige-100); padding: 10px 12px; border-radius: 12px; font-size: 0.8rem; margin-bottom: 14px;">
+            <div>
+              <span style="color: var(--mocha); display: block; font-size: 0.72rem;">Último pago</span>
+              <strong>${mem.lastPaidDate}</strong>
+            </div>
+            <div>
+              <span style="color: var(--mocha); display: block; font-size: 0.72rem;">Próximo corte</span>
+              <strong style="color: ${isActive ? 'var(--espresso)' : 'var(--wine-700)'};">${mem.nextBillingDate}</strong>
+            </div>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <button type="button" class="btn btn-primary btn-block" onclick="openMembershipModal()">
+              <i class="fa-solid fa-credit-card"></i> ${isActive ? 'Pagar / Adelantar Mensualidad ($399 MXN)' : 'Renovar Membresía Ahora ($399 MXN)'}
+            </button>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+              <button type="button" class="btn btn-secondary btn-sm" onclick="openMembershipModal()">
+                <i class="fa-solid fa-wallet"></i> Cambiar método
+              </button>
+              <button type="button" class="btn btn-outline btn-sm" onclick="toggleSimulateExpiration()">
+                <i class="fa-solid fa-clock-rotate-left"></i> ${isActive ? 'Simular vencimiento' : 'Restaurar activa'}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Historial de Recibos Mensuales ($399 MXN) -->
+        <div class="section-title">
+          <h3>Recibos</h3>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          ${mem.receipts.map(rec => `
+            <div class="card" style="padding: 12px; display: flex; justify-content: space-between; align-items: center;">
+              <div>
+                <strong style="font-size: 0.86rem; color: var(--wine-900); display: block;">${rec.id} • Mensualidad Kaffe</strong>
+                <span style="font-size: 0.75rem; color: var(--mocha);">${rec.date} • ${rec.method}</span>
+              </div>
+              <div style="text-align: right;">
+                <strong style="display: block; color: var(--espresso);">$${rec.amount} MXN</strong>
+                <span class="badge badge-green" style="font-size: 0.68rem;">${rec.status}</span>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      `;
+    }
+
+    function toggleSimulateExpiration() {
+      const cafe = state.cafes.find(c => c.id === state.currentUser.cafeId) || state.cafes[0];
+      const mem = ensureCafeMembership(cafe);
+      if (mem.status === 'active') {
+        mem.status = 'expired';
+        mem.nextBillingDate = 'Vencida';
+        showToast('Simulación: Membresía vencida ($399 MXN pendientes)');
+      } else {
+        mem.status = 'active';
+        mem.nextBillingDate = '20 Dic 2026';
+        showToast('Membresía restaurada a estado Activo');
+      }
+      switchTab(state.activeTab);
+    }
+
+    function openMembershipModal() {
+      const cafe = state.cafes.find(c => c.id === state.currentUser.cafeId) || state.cafes[0];
+      const modalBody = document.getElementById('membership-modal-body');
+
+      modalBody.innerHTML = `
+        <div class="sheet-handle"></div>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+          <div>
+            <h2 class="font-serif" style="font-size: 1.35rem; color: var(--wine-900);">Suscripción Kaffe Partner</h2>
+            <p style="font-size: 0.8rem; color: var(--mocha);">${cafe.name} • RFC ${cafe.rfc}</p>
+          </div>
+          <span class="badge badge-coffee" style="font-size: 0.85rem;">$399 MXN / mes</span>
+        </div>
+
+        <form onsubmit="processMembershipPayment(event)">
+          <div class="input-group">
+            <label>Método de Pago</label>
+            <select id="modal-mem-method" class="input-control" onchange="toggleModalMemMethod()">
+              <option value="card">💳 Tarjeta de Crédito / Débito</option>
+              <option value="spei">🏦 Transferencia SPEI / OXXO Pay</option>
+            </select>
+          </div>
+
+          <div id="modal-mem-card-box">
+            <div class="input-group">
+              <label>Número de Tarjeta</label>
+              <input type="text" id="modal-mem-card" class="input-control" placeholder="4555 •••• •••• 4821" maxlength="19" required>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px;">
+              <div>
+                <label style="font-size: 0.8rem; font-weight: 600; color: var(--mocha); display: block; margin-bottom: 6px;">Vencimiento</label>
+                <input type="text" class="input-control" placeholder="09/29" maxlength="5" required>
+              </div>
+              <div>
+                <label style="font-size: 0.8rem; font-weight: 600; color: var(--mocha); display: block; margin-bottom: 6px;">CVV</label>
+                <input type="password" class="input-control" placeholder="•••" maxlength="4" required>
+              </div>
+            </div>
+          </div>
+
+          <div id="modal-mem-spei-box" class="hidden" style="background: var(--beige-50); border: 1px solid var(--beige-300); padding: 12px; border-radius: 12px; font-size: 0.8rem; margin-bottom: 14px;">
+            <div><strong>CLABE Interbancaria:</strong> 0120 2800 1948 3990 14</div>
+            <div style="margin-top: 4px;"><strong>Referencia OXXO Pay:</strong> 9300-3990-KAFFE</div>
+            <div style="margin-top: 4px; color: var(--coffee-dark); font-weight: 600;">Monto exacto: $399.00 MXN</div>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-block">
+            <i class="fa-solid fa-lock"></i> Confirmar Pago de $399 MXN
+          </button>
+        </form>
+      `;
+
+      document.getElementById('membership-modal').classList.add('open');
+    }
+
+    function toggleModalMemMethod() {
+      const method = document.getElementById('modal-mem-method').value;
+      const isCard = method === 'card';
+      document.getElementById('modal-mem-card-box').classList.toggle('hidden', !isCard);
+      document.getElementById('modal-mem-spei-box').classList.toggle('hidden', isCard);
+      document.querySelectorAll('#modal-mem-card-box input').forEach(inp => {
+        inp.required = isCard;
+      });
+    }
+
+    function processMembershipPayment(e) {
+      e.preventDefault();
+      const cafe = state.cafes.find(c => c.id === state.currentUser.cafeId) || state.cafes[0];
+      const mem = ensureCafeMembership(cafe);
+      const method = document.getElementById('modal-mem-method').value;
+
+      let methodLabel = 'Transferencia SPEI / OXXO Pay';
+      if (method === 'card') {
+        const digits = document.getElementById('modal-mem-card').value.replace(/\D/g, '');
+        methodLabel = `Tarjeta •••• ${digits.slice(-4) || '4821'}`;
+      }
+
+      mem.status = 'active';
+      mem.paymentMethod = methodLabel;
+      mem.lastPaidDate = '20 Nov 2026';
+      mem.nextBillingDate = '20 Dic 2026';
+      mem.receipts.unshift({
+        id: 'FAC-' + Math.floor(1000 + Math.random() * 8999),
+        date: '20 Nov 2026',
+        amount: 399,
+        method: methodLabel,
+        status: 'Pagado'
+      });
+
+      closeModal('membership-modal');
+      switchTab(state.activeTab);
+      showToast('¡Pago de $399 MXN confirmado! Membresía Activa');
+    }
+
+    /* ------------------------------------------------------------------------
+       10. INICIALIZACIÓN
+       ------------------------------------------------------------------------ */
+    window.addEventListener('DOMContentLoaded', () => {
+      setAuthRole('client');
+      setAuthMode('login');
+    });
+  </script>
+</body>
 </html>

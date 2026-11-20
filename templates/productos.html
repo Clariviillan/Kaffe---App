@@ -1,0 +1,33 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Productos</title>
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='main.css') }}">
+</head>
+<body>
+
+    <header>
+        <h1>Nuestros productos</h1>
+        <p>Catálogo de productos disponibles</p>
+    </header>
+
+    <main>
+        <div class="productos">
+            {% for producto in productos %}
+                <div class="tarjeta">
+                    <h2>{{ producto.nombre }}</h2>
+                    <p>ID: {{ producto.id }}</p>
+                    <p>Precio: ${{ producto.precio }}</p>
+                    <p>Categoría: {{ producto.categoria }}</p>
+                </div>
+            {% endfor %}
+        </div>
+
+        <a href="/" class="boton">Regresar al inicio</a>
+    </main>
+
+</body>
+</html>
